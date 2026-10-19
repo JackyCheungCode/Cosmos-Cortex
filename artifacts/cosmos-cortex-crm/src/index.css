@@ -315,3 +315,63 @@ button, input, textarea, select { font: inherit; }
 .cds--list-box__menu { z-index: 10000; }
 .brand-name strong { font-weight: 700; }
 @media (max-width: 760px) { .toolbar .cds--list-box__wrapper { width: 100%; min-width: 100%; } }
+
+
+/* IBM Carbon-inspired global shell */
+.app-shell { min-height: 100dvh; }
+.main-area { width: 100%; margin-left: 0; }
+.topbar {
+  position: sticky; top: 0; z-index: 30; height: 48px; padding: 0 16px;
+  background: #161616; border-bottom: 1px solid #393939; color: #f4f4f4;
+}
+.topbar-left, .topbar-right { display: flex; align-items: center; height: 100%; }
+.topbar-left { gap: 12px; min-width: 0; }
+.topbar-right { gap: 4px; }
+.header-menu-button.cds--btn, .header-action.cds--btn, .header-avatar.cds--btn {
+  min-height: 48px; height: 48px; width: 48px; max-width: 48px; padding: 0;
+  background: transparent; color: #f4f4f4; border: 0; justify-content: center;
+}
+.header-menu-button.cds--btn:hover, .header-action.cds--btn:hover, .header-avatar.cds--btn:hover { background: #393939; color: #fff; }
+.header-menu-button .cds--btn__icon, .header-action .cds--btn__icon, .header-avatar .cds--btn__icon { fill: currentColor; }
+.header-brand {
+  appearance: none; border: 0; padding: 0; background: transparent; color: #f4f4f4;
+  font: 400 16px/1 'IBM Plex Sans', sans-serif; letter-spacing: -.2px; cursor: pointer; white-space: nowrap;
+}
+.header-brand strong { font-weight: 700; }
+.profile-control { position: relative; height: 48px; display: flex; align-items: center; }
+.header-avatar.cds--btn { width: 44px; max-width: 44px; }
+.header-avatar .cds--btn__icon { width: 24px; height: 24px; }
+.profile-menu {
+  position: absolute; z-index: 50; top: 48px; right: 0; width: 220px; padding: 8px 0;
+  background: #262626; border: 1px solid #525252; box-shadow: 0 8px 24px #0004;
+}
+.profile-menu-label { padding: 10px 16px; color: #c6c6c6; font-size: 12px; border-bottom: 1px solid #393939; margin-bottom: 4px; }
+.profile-menu .profile-menu-item.cds--btn { width: 100%; max-width: none; justify-content: flex-start; color: #f4f4f4; padding: 0 16px; }
+.profile-menu .profile-menu-item.cds--btn:hover { background: #393939; }
+.side-nav {
+  position: fixed; z-index: 25; top: 48px; bottom: 0; left: 0; inset: 48px auto 0 0;
+  width: 256px; padding: 16px 0; overflow-y: auto; background: #262626; color: #f4f4f4;
+  border-right: 1px solid #393939; transform: translateX(-102%); transition: transform .18s ease;
+  box-shadow: 8px 0 24px #0002;
+}
+.side-nav.open { transform: translateX(0); }
+.side-nav .nav-section { padding: 24px 16px 8px; color: #a8a8a8; font-size: 11px; letter-spacing: .2px; text-transform: none; }
+.side-nav .nav-links { padding: 0; gap: 0; }
+.side-nav .nav-link { min-height: 44px; padding: 0 16px; gap: 14px; border-left: 3px solid transparent; color: #f4f4f4; font-size: 14px; }
+.side-nav .nav-link svg { width: 18px; height: 18px; flex: 0 0 18px; }
+.side-nav .nav-link:hover { background: #353535; color: #fff; }
+.side-nav .nav-link.active { background: #393939; border-left-color: #0f62fe; color: #fff; }
+.side-nav .nav-primary { padding-bottom: 8px; border-bottom: 1px solid #393939; }
+.sidebar-scrim {
+  appearance: none; position: fixed; z-index: 24; top: 48px; right: 0; bottom: 0; left: 0;
+  width: 100%; height: auto; padding: 0; border: 0; border-radius: 0;
+  background: rgba(0,0,0,.32); cursor: default;
+}
+@media (max-width: 760px) {
+  .topbar { padding: 0 8px; height: 48px; }
+  .topbar-left { gap: 4px; }
+  .header-menu-button.cds--btn, .header-action.cds--btn { width: 42px; max-width: 42px; }
+  .header-brand { font-size: 15px; }
+  .side-nav { width: min(280px, 84vw); }
+  .content { padding: 20px 14px 32px; }
+}
