@@ -435,3 +435,61 @@ button, input, textarea, select { font: inherit; }
 }
 .cds--list-box__menu-item--active .cds--list-box__menu-item__option,
 .cds--list-box__menu-item--highlighted { background: #e8f1ff; }
+
+
+/* Header controls: actions open local panels, not unexpected routes */
+.header-brand {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  font: 400 16px/1 'IBM Plex Sans', sans-serif;
+  letter-spacing: -.2px;
+  white-space: nowrap;
+  cursor: default;
+  user-select: none;
+}
+.header-brand strong { font-weight: 700; }
+.header-popover-anchor { position: relative; display: flex; align-items: center; }
+.header-popover {
+  position: absolute;
+  z-index: 60;
+  top: 48px;
+  right: 0;
+  width: min(360px, calc(100vw - 24px));
+  padding: 16px;
+  background: #fff;
+  color: #161616;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 8px 24px #0003;
+}
+.header-search-popover .cds--search { width: 100%; }
+.header-popover-hint { padding-top: 10px; color: #525252; font-size: 12px; }
+.header-popover-title { font-size: 14px; font-weight: 600; padding-bottom: 12px; border-bottom: 1px solid #e0e0e0; }
+.header-notification-empty { padding: 24px 4px 12px; text-align: center; color: #525252; font-size: 14px; }
+@media (max-width: 480px) {
+  .header-popover { right: -44px; width: min(340px, calc(100vw - 16px)); }
+  .header-brand { font-size: 15px; }
+}
+
+/* IBM Carbon blue is the consistent interactive accent throughout the CRM */
+:root {
+  --accent: #0f62fe;
+  --cds-interactive: #0f62fe;
+  --cds-focus: #0f62fe;
+  --cds-link-primary: #0f62fe;
+  --cds-button-primary: #0f62fe;
+  --cds-button-primary-hover: #0353e9;
+  --cds-button-primary-active: #002d9c;
+  --cds-border-interactive: #0f62fe;
+}
+a.record-link, .content a:not(.nav-link) { color: #0f62fe; }
+.cds--btn--primary, .cds--btn--primary:focus { background-color: #0f62fe; }
+.cds--btn--primary:hover { background-color: #0353e9; }
+.cds--btn--primary:active { background-color: #002d9c; }
+.cds--checkbox:checked + .cds--checkbox-label::before { background-color: #0f62fe; border-color: #0f62fe; }
+.cds--radio-button:checked + .cds--radio-button__label .cds--radio-button__appearance { border-color: #0f62fe; }
+.cds--date-picker__input:focus, .cds--text-input:focus, .cds--text-area:focus { outline-color: #0f62fe; }
