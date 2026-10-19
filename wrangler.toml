@@ -1,5 +1,6 @@
-name = "cosmos-cortex-crm"
+name = "cosmos-cortex"
 compatibility_date = "2026-10-19"
 pages_build_output_dir = "./artifacts/cosmos-cortex-crm/dist/public"
 
-# Supabase runtime variables are configured in the Cloudflare Pages project settings.
+[vars]
+VITE_SUPABASE_URL ="https://texdpbvtqbnfjdstqinh.supabase.co"
