@@ -7,7 +7,7 @@ import {
 import {
   Add, ArrowLeft, Building, ChartRelationship, Currency, Dashboard as DashboardIcon,
   Delivery as DeliveryIcon, Edit, Menu, Purchase, RequestQuote, Search as SearchIcon,
-  Logout, TrashCan, UserFollow, UserMultiple,
+  Logout, Notification, TrashCan, UserAvatar, UserFollow, UserMultiple,
 } from '@carbon/icons-react';
 import {
   getGetDashboardQueryKey, getGetCrmRecordQueryKey, getListCrmRecordsQueryKey,
@@ -171,33 +171,47 @@ const formatAmount = (value: unknown, currency = 'CNY', lang: Lang = 'zh') => {
 const queryClient = new QueryClient();
 
 function AppShell({ children, lang, setLang, onSignOut }: { children: ReactNode; lang: Lang; setLang: (lang: Lang) => void; onSignOut: () => void }) {
-  const [path] = useLocation();
+  const [path, setLocation] = useLocation();
   const [navOpen, setNavOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
   const label = (zh: string, en: string) => lang === 'zh' ? zh : en;
+  const currentModule = modules.find((m) => path.startsWith(`/${m.entity}`));
+  const go = (href: string) => { setLocation(href); setNavOpen(false); setProfileOpen(false); };
   return <div className="app-shell">
-    <div className={`mobile-scrim ${navOpen ? 'show' : ''}`} onClick={() => setNavOpen(false)} />
-    <aside className={`side-nav ${navOpen ? 'open' : ''}`} data-testid="navigation-sidebar">
-      <Link href="/" className="brand" data-testid="link-brand"><div className="brand-mark">C</div><div><div className="brand-name">cosmos <strong>Cortex</strong></div><div className="brand-caption">{label('个人工作区', 'Personal workspace')}</div></div></Link>
-      <div className="nav-section">{label('工作台', 'Workspace')}</div>
-      <nav className="nav-links">
-        <Link href="/" className={`nav-link ${path === '/' ? 'active' : ''}`} data-testid="link-dashboard"><DashboardIcon />{label('总览', 'Overview')}</Link>
+    {navOpen && <button className="sidebar-scrim" aria-label={label('关闭侧边栏', 'Close navigation')} onClick={() => setNavOpen(false)} />}
+    <aside className={`side-nav ${navOpen ? 'open' : ''}`} data-testid="navigation-sidebar" aria-hidden={!navOpen}>
+      <nav className="nav-links nav-primary">
+        <Link href="/" onClick={() => setNavOpen(false)} className={`nav-link ${path === '/' ? 'active' : ''}`} data-testid="link-dashboard"><DashboardIcon />{label('总览', 'Overview')}</Link>
       </nav>
       <div className="nav-section">{label('客户与销售', 'Customer & sales')}</div>
       <nav className="nav-links">
-        {modules.slice(0, 4).map((mod) => { const Icon = mod.icon; const active = path.startsWith(`/${mod.entity}`); return <Link href={`/${mod.entity}`} key={mod.entity} className={`nav-link ${active ? 'active' : ''}`} data-testid={`link-module-${mod.entity}`}><Icon />{lang === 'zh' ? mod.label : mod.en}</Link>; })}
+        {modules.slice(0, 4).map((mod) => { const Icon = mod.icon; const active = path.startsWith(`/${mod.entity}`); return <Link href={`/${mod.entity}`} onClick={() => setNavOpen(false)} key={mod.entity} className={`nav-link ${active ? 'active' : ''}`} data-testid={`link-module-${mod.entity}`}><Icon />{lang === 'zh' ? mod.label : mod.en}</Link>; })}
       </nav>
       <div className="nav-section">{label('订单履约', 'Order fulfillment')}</div>
       <nav className="nav-links">
-        {modules.slice(4).map((mod) => { const Icon = mod.icon; const active = path.startsWith(`/${mod.entity}`); return <Link href={`/${mod.entity}`} key={mod.entity} className={`nav-link ${active ? 'active' : ''}`} data-testid={`link-module-${mod.entity}`}><Icon />{lang === 'zh' ? mod.label : mod.en}</Link>; })}
+        {modules.slice(4).map((mod) => { const Icon = mod.icon; const active = path.startsWith(`/${mod.entity}`); return <Link href={`/${mod.entity}`} onClick={() => setNavOpen(false)} key={mod.entity} className={`nav-link ${active ? 'active' : ''}`} data-testid={`link-module-${mod.entity}`}><Icon />{lang === 'zh' ? mod.label : mod.en}</Link>; })}
       </nav>
-      <div className="nav-bottom"><div className="owner-chip"><div className="owner-avatar">CO</div><div><div>{label('个人工作区', 'Owner workspace')}</div><div className="owner-sub">{label('单人账户', 'Single owner')}</div></div></div><Button className="sign-out" kind="ghost" size="sm" renderIcon={Logout} onClick={onSignOut} data-testid="button-signout">{label('退出登录', 'Sign out')}</Button></div>
     </aside>
     <div className="main-area">
-      <header className="topbar">
-        <div className="topbar-left"><Button className="mobile-menu" kind="ghost" size="sm" hasIconOnly renderIcon={Menu} iconDescription={label('打开导航', 'Open navigation')} onClick={() => setNavOpen(!navOpen)} data-testid="button-mobile-menu" /><span className="crumb">{label('销售运营', 'Sales operations')}　/　{path === '/' ? label('总览', 'Overview') : (modules.find((m) => path.startsWith(`/${m.entity}`)) ? (lang === 'zh' ? modules.find((m) => path.startsWith(`/${m.entity}`))!.label : modules.find((m) => path.startsWith(`/${m.entity}`))!.en) : '')}</span></div>
-        <div className="topbar-right"><Button className="language-toggle" kind="tertiary" size="sm" onClick={() => setLang(lang === 'zh' ? 'en' : 'zh')} data-testid="button-language-toggle">{lang === 'zh' ? 'EN' : '简体中文'}</Button></div>
+      <header className="topbar" data-testid="app-header">
+        <div className="topbar-left">
+          <Button className="header-menu-button" kind="ghost" size="sm" hasIconOnly renderIcon={Menu} iconDescription={label('展开或隐藏侧边栏', 'Toggle navigation')} onClick={() => setNavOpen((open) => !open)} data-testid="button-mobile-menu" />
+          <button className="header-brand" onClick={() => go('/')} aria-label="cosmos Cortex home">cosmos <strong>Cortex</strong></button>
+        </div>
+        <div className="topbar-right">
+          <Button className="header-action" kind="ghost" size="sm" hasIconOnly renderIcon={SearchIcon} iconDescription={label('搜索潜在客户', 'Search leads')} onClick={() => go('/leads')} data-testid="button-header-search" />
+          <Button className="header-action" kind="ghost" size="sm" hasIconOnly renderIcon={Notification} iconDescription={label('消息与联系人', 'Messages and contacts')} onClick={() => go('/contacts')} data-testid="button-header-messages" />
+          <div className="profile-control">
+            <Button className="header-avatar" kind="ghost" size="sm" hasIconOnly renderIcon={UserAvatar} iconDescription={label('用户菜单', 'User menu')} onClick={() => setProfileOpen((open) => !open)} data-testid="button-user-avatar" />
+            {profileOpen && <div className="profile-menu" role="menu">
+              <div className="profile-menu-label">{label('已登录用户', 'Signed-in user')}</div>
+              <Button kind="ghost" size="sm" className="profile-menu-item" onClick={() => { setLang(lang === 'zh' ? 'en' : 'zh'); setProfileOpen(false); }}>{lang === 'zh' ? 'Switch to English' : '切换到简体中文'}</Button>
+              <Button kind="ghost" size="sm" className="profile-menu-item" renderIcon={Logout} onClick={() => { setProfileOpen(false); onSignOut(); }} data-testid="button-signout">{label('退出登录', 'Sign out')}</Button>
+            </div>}
+          </div>
+        </div>
       </header>
-      <main className="content">{children}</main>
+      <main className="content" onClick={() => { if (profileOpen) setProfileOpen(false); }}>{children}</main>
     </div>
   </div>;
 }
