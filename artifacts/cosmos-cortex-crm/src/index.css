@@ -10,10 +10,10 @@
   --ink: #172b3a;
   --muted: #5b6b78;
   --line: #d6dee4;
-  --nav: #102a3a;
-  --nav-active: #25485b;
-  --accent: #0f6b78;
-  --accent-soft: #d8ecee;
+  --nav: #161616;
+  --nav-active: #353535;
+  --accent: #0f62fe;
+  --accent-soft: #edf5ff;
   --warm: #e5a63b;
   --danger: #b42318;
 }
@@ -26,14 +26,14 @@ button, input, textarea, select { font: inherit; }
 .app-shell { display: flex; min-height: 100dvh; }
 .side-nav { position: fixed; z-index: 20; inset: 0 auto 0 0; width: 248px; background: var(--nav); color: #e7f0f4; display: flex; flex-direction: column; transition: transform .2s ease; }
 .brand { height: 72px; display: flex; align-items: center; gap: 12px; padding: 0 22px; border-bottom: 1px solid #294454; }
-.brand-mark { width: 32px; height: 32px; background: #d9a441; display: grid; place-items: center; color: #102a3a; font-size: 17px; font-weight: 700; }
+.brand-mark { width: 32px; height: 32px; background: #0f62fe; display: grid; place-items: center; color: #ffffff; font-size: 17px; font-weight: 700; }
 .brand-name { font-size: 17px; font-weight: 600; letter-spacing: -.3px; }
 .brand-caption { color: #9cb2bf; font-size: 10px; letter-spacing: 1.1px; text-transform: uppercase; margin-top: 2px; }
 .nav-section { padding: 20px 12px 6px; color: #88a2b1; font-size: 10px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; }
 .nav-links { display: flex; flex-direction: column; gap: 2px; padding: 0 9px; }
 .nav-link { text-decoration: none; color: #d3e0e6; min-height: 38px; display: flex; align-items: center; gap: 12px; padding: 0 12px; font-size: 13px; border-left: 3px solid transparent; }
 .nav-link:hover { background: #1a394b; color: white; }
-.nav-link.active { background: var(--nav-active); color: white; border-left-color: #e0ad4e; }
+.nav-link.active { background: var(--nav-active); color: white; border-left-color: #0f62fe; }
 .nav-link svg { width: 17px; height: 17px; }
 .nav-bottom { margin-top: auto; border-top: 1px solid #294454; padding: 14px 16px 18px; }
 .owner-chip { display: flex; gap: 10px; align-items: center; color: #d9e5ea; font-size: 12px; }
@@ -306,3 +306,12 @@ button, input, textarea, select { font: inherit; }
  .login-slogan { margin-bottom:28px; }
  .login-copyright { padding-top:12px; font-size:9px; }
 }
+
+/* Carbon-rendered interactive menus and calendar controls */
+.toolbar .cds--list-box__wrapper { width: 176px; min-width: 176px; }
+.form-grid .cds--list-box__wrapper, .form-grid .cds--date-picker { width: 100%; }
+.form-grid .cds--date-picker-container { width: 100%; }
+.form-grid .cds--date-picker-input__wrapper { width: 100%; }
+.cds--list-box__menu { z-index: 10000; }
+.brand-name strong { font-weight: 700; }
+@media (max-width: 760px) { .toolbar .cds--list-box__wrapper { width: 100%; min-width: 100%; } }
