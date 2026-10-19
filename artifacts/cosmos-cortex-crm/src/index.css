@@ -555,6 +555,7 @@ a.record-link, .content a:not(.nav-link) { color: #0f62fe; }
 .mobile-record-card-chevron { flex: 0 0 20px; color: var(--cds-icon-primary, #161616); }
 @media (max-width: 760px) {
   .content { padding: 20px 16px 32px; }
+  [data-testid^="page-"] > .panel { border: 0; background: transparent; }
   .mobile-card-list {
     display: flex;
     flex-direction: column;
