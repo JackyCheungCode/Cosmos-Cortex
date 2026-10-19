@@ -35,7 +35,8 @@ const leadStatuses = options(
   ['new', '新建', 'New'],
   ['contacted', '联系中', 'Contacted'],
   ['qualified', '已合格', 'Qualified'],
-  ['unqualified', '未合格', 'Unqualified'],
+  ['unqualified', '不合格', 'Unqualified'],
+  ['converted', '已转化', 'Converted'],
 );
 const opportunityStages = options(
   ['prospecting', '初步接洽', 'Prospecting'],
@@ -79,11 +80,13 @@ const activeStatuses = options(['active', '启用', 'Active'], ['inactive', '停
 
 const modules: ModuleDef[] = [
   { entity: 'leads', label: '线索', en: 'Leads', icon: UserFollow, fields: [
-    { key: 'name', required: true }, { key: 'company' }, { key: 'title' }, { key: 'email', kind: 'email' }, { key: 'phone', kind: 'tel' },
-    { key: 'source', kind: 'select', options: options(['website', '网站', 'Website'], ['event', '展会', 'Event'], ['referral', '推荐', 'Referral'], ['phone', '电话', 'Phone'], ['other', '其他', 'Other']) },
-    { key: 'status', kind: 'select', options: leadStatuses },
-    { key: 'rating', kind: 'select', options: options(['hot', '热', 'Hot'], ['warm', '温', 'Warm'], ['cold', '冷', 'Cold']) }, { key: 'notes', kind: 'textarea' },
-  ], columns: ['name', 'company', 'title', 'email', 'source', 'status'], statuses: leadStatuses },
+    { key: 'name', required: true }, { key: 'company', required: true }, { key: 'title' }, { key: 'email', kind: 'email' }, { key: 'phone', kind: 'tel' },
+    { key: 'country', required: true },
+    { key: 'source', kind: 'select', required: true, options: options(['website', '官网表单', 'Website form'], ['event', '展会', 'Trade show'], ['outbound_email', '邮件开发', 'Outbound email'], ['social', '社交媒体', 'Social media'], ['marketplace', '平台询盘', 'Marketplace inquiry'], ['referral', '客户推荐', 'Referral'], ['phone', '电话', 'Phone'], ['other', '其他', 'Other']) },
+    { key: 'status', kind: 'select', required: true, options: leadStatuses },
+    { key: 'rating', kind: 'select', options: options(['hot', '热', 'Hot'], ['warm', '温', 'Warm'], ['cold', '冷', 'Cold']) },
+    { key: 'product_interest' }, { key: 'estimated_amount', kind: 'number' }, { key: 'next_action', kind: 'date', nullable: true }, { key: 'last_follow_up', kind: 'date', nullable: true }, { key: 'notes', kind: 'textarea' },
+  ], columns: ['name', 'company', 'country', 'status', 'source', 'rating'], statuses: leadStatuses },
   { entity: 'accounts', label: '客户', en: 'Customers', icon: Building, fields: [
     { key: 'name', required: true }, { key: 'account_number' }, { key: 'type', kind: 'select', options: options(['customer', '客户', 'Customer'], ['prospect', '潜在客户', 'Prospect'], ['partner', '合作伙伴', 'Partner']) },
     { key: 'status', kind: 'select', options: activeStatuses }, { key: 'industry' },
@@ -122,8 +125,8 @@ const modules: ModuleDef[] = [
 ];
 
 const labels: Record<string, [string, string]> = {
-  name: ['名称', 'Name'], company: ['公司', 'Company'], title: ['职务', 'Title'], email: ['电子邮箱', 'Email'], phone: ['电话', 'Phone'],
-  source: ['来源', 'Source'], status: ['状态', 'Status'], rating: ['评级', 'Rating'], notes: ['备注', 'Notes'],
+  name: ['联系人姓名', 'Contact name'], company: ['公司名称', 'Company name'], title: ['职务', 'Title'], email: ['电子邮箱', 'Email'], phone: ['电话', 'Phone'], country: ['国家 / 地区', 'Country / region'], product_interest: ['产品兴趣', 'Product interest'], estimated_amount: ['预估金额', 'Estimated amount'], next_action: ['下次行动日期', 'Next action date'], last_follow_up: ['最近跟进', 'Last follow-up'],
+  source: ['线索来源', 'Lead source'], status: ['线索状态', 'Lead status'], rating: ['线索评分', 'Lead rating'], notes: ['需求与跟进备注', 'Needs & follow-up notes'],
   account_number: ['客户编号', 'Customer number'], type: ['类型', 'Type'], industry: ['行业', 'Industry'], website: ['网站', 'Website'],
   billing_city: ['账单城市', 'Billing city'], billing_country: ['账单国家/地区', 'Billing country'],
   first_name: ['名', 'First name'], last_name: ['姓', 'Last name'], account_id: ['客户', 'Customer'], department: ['部门', 'Department'],
