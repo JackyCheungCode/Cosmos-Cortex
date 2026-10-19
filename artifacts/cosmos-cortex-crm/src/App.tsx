@@ -19,6 +19,7 @@ import type { CrmEntity, CrmRecord } from '@workspace/api-client-react';
 import type { Session } from '@supabase/supabase-js';
 import { Link, Route, Switch, useLocation, useParams } from 'wouter';
 import { supabase, supabaseConfigured } from './lib/supabase';
+import ContactsWorkspace from './components/contacts/ContactsWorkspace';
 import './index.css';
 
 type Lang = 'zh' | 'en';
@@ -685,6 +686,8 @@ function Router({ lang, setLang, onSignIn, onSignOut }: { lang: Lang; setLang: (
   if (path === '/login') return <LoginPage lang={lang} setLang={setLang} onSignIn={onSignIn} />;
   return <AppShell lang={lang} setLang={setLang} onSignOut={onSignOut}><Switch>
     <Route path="/"><Dashboard lang={lang} /></Route>
+    <Route path="/contacts/:id"><ContactsWorkspace lang={lang} /></Route>
+    <Route path="/contacts"><ContactsWorkspace lang={lang} /></Route>
     {modules.map((mod) => <Route key={`${mod.entity}-detail`} path={`/${mod.entity}/:id`}><ResourcePage entity={mod.entity} lang={lang} /></Route>)}
     {modules.map((mod) => <Route key={mod.entity} path={`/${mod.entity}`}><ResourcePage entity={mod.entity} lang={lang} /></Route>)}
     <Route><div className="empty-state"><h3>404</h3><p>{lang === 'zh' ? '页面不存在。' : 'This page could not be found.'}</p><Link href="/" className="record-link">{lang === 'zh' ? '返回总览' : 'Back to overview'}</Link></div></Route>
