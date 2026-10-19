@@ -160,3 +160,110 @@ button, input, textarea, select { font: inherit; }
  .detail-grid { grid-template-columns: 1fr; }
  .detail-field:nth-child(odd) { border-right: 0; }
 }
+
+
+/* Cosmos CRM sign-in refresh: original enterprise layout, not a copy of another provider */
+.login-screen {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background:
+    radial-gradient(ellipse at 82% 10%, rgba(71, 159, 164, .16), transparent 34%),
+    #f2f5f7;
+}
+.login-identity {
+  min-height: 250px;
+  padding: 30px max(28px, calc((100vw - 1120px) / 2));
+  display: grid;
+  grid-template-columns: minmax(220px, .8fr) minmax(0, 1.2fr);
+  align-items: center;
+  gap: clamp(28px, 6vw, 84px);
+  background: linear-gradient(115deg, #102a3a 0%, #153e50 65%, #17616a 100%);
+  position: relative;
+  overflow: hidden;
+}
+.login-identity::after {
+  content: '';
+  position: absolute;
+  width: 330px;
+  height: 330px;
+  right: 7%;
+  top: -210px;
+  border: 1px solid rgba(205, 232, 233, .2);
+  border-radius: 50%;
+  box-shadow: 0 0 0 32px rgba(205, 232, 233, .035), 0 0 0 66px rgba(205, 232, 233, .025);
+  pointer-events: none;
+}
+.login-identity > .brand {
+  align-self: start;
+  width: max-content;
+  height: auto;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  position: relative;
+  z-index: 1;
+}
+.login-identity > div:nth-child(2) {
+  position: relative;
+  z-index: 1;
+  max-width: 650px;
+}
+.login-identity h1 {
+  font-size: clamp(27px, 3.2vw, 42px);
+  max-width: 620px;
+  margin: 0 0 12px;
+  line-height: 1.12;
+  letter-spacing: -1.1px;
+  font-weight: 500;
+}
+.login-identity p {
+  margin: 0;
+  max-width: 560px;
+  line-height: 1.7;
+  color: #c1d5dc;
+  font-size: 14px;
+}
+.login-identity .eyebrow { margin-bottom: 10px; }
+.login-aside-foot { display: none; }
+.login-form-side {
+  display: grid;
+  place-items: start center;
+  flex: 1;
+  padding: 0 24px 54px;
+  margin-top: -22px;
+  position: relative;
+  z-index: 2;
+}
+.login-box {
+  width: min(460px, 100%);
+  padding: 34px 38px 28px;
+  background: #fff;
+  border: 1px solid #d9e1e5;
+  box-shadow: 0 16px 48px rgba(16, 42, 58, .09);
+}
+.login-box h2 { font-size: 25px; letter-spacing: -.45px; }
+.login-box > p { margin-bottom: 26px; line-height: 1.55; }
+.login-box .cds--text-input { background: #fff; }
+.login-box .cds--btn { min-height: 48px; margin-top: 12px; }
+.login-footnote {
+  border-top-color: #e2e8eb;
+  margin-top: 24px;
+  padding-top: 16px;
+  line-height: 1.6;
+}
+@media (max-width: 760px) {
+  .login-identity {
+    min-height: 0;
+    padding: 24px 22px 48px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 26px;
+  }
+  .login-identity > .brand { align-self: flex-start; }
+  .login-identity h1 { margin: 0 0 10px; font-size: 30px; }
+  .login-identity p { font-size: 12px; }
+  .login-form-side { padding: 0 16px 34px; margin-top: -22px; }
+  .login-box { padding: 26px 22px 22px; }
+}
