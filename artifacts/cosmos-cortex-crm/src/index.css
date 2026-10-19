@@ -568,188 +568,520 @@ a.record-link, .content a:not(.nav-link) { color: #0f62fe; }
 }
 
 
-/* Carbon v11 mobile quote-list refinement */
-:root {
-  font-family: 'IBM Plex Sans', sans-serif;
-  --cds-font-family: 'IBM Plex Sans', sans-serif;
+
+/* --------------------------------------------------------------------------
+   Cosmos Cortex authenticated workspace
+   Carbon v11 foundations and IBM Cloud console layout.
+   All overrides are scoped to .app-shell; the login experience above remains
+   unchanged. Layout uses Carbon React controls and layer/type conventions.
+   -------------------------------------------------------------------------- */
+.app-shell {
   --cds-interactive: #0f62fe;
   --cds-focus: #0f62fe;
-  --cds-background: #ffffff;
+  --cds-background: #f4f4f4;
+  --cds-layer: #ffffff;
   --cds-layer-01: #ffffff;
   --cds-layer-02: #f4f4f4;
   --cds-text-primary: #161616;
   --cds-text-secondary: #525252;
-  --cds-border-tile-01: #e0e0e0;
-  --cds-spacing-05: 1rem;
+  --cds-text-placeholder: #8d8d8d;
+  --cds-border-subtle-01: #e0e0e0;
+  --cds-border-strong-01: #8d8d8d;
+  --cds-button-primary: #0f62fe;
+  --cds-button-primary-hover: #0353e9;
+  --cds-button-primary-active: #002d9c;
+  min-height: 100dvh;
+  background: #f4f4f4;
+  color: #161616;
+  font-family: 'IBM Plex Sans', sans-serif;
 }
-
-/* Strict flat geometry: no rounded corners or decorative shadows anywhere. */
-*, *::before, *::after {
-  border-radius: 0 !important;
-  box-shadow: none !important;
+.app-shell, .app-shell *, .app-shell *::before, .app-shell *::after {
+  box-sizing: border-box;
 }
-body { background: #fff; color: #161616; font-family: 'IBM Plex Sans', sans-serif; }
-.app-shell, .main-area, .content { background: #fff; color: #161616; }
-.topbar { background: #161616; color: #f4f4f4; }
-.cds--btn--primary, .cds--btn--primary:focus { background: #0f62fe; }
-.cds--btn--primary:hover { background: #0353e9; }
-.cds--btn--primary:active { background: #002d9c; }
-
-/* Carbon Search and Dropdown controls: fluid, gray field surface, bottom rule only. */
-.toolbar .cds--search,
-.toolbar .cds--list-box__wrapper,
-.toolbar .cds--dropdown,
-.toolbar .cds--list-box {
-  width: 100%;
-  max-width: none;
+.app-shell .main-area {
+  width: calc(100% - 256px);
+  min-width: 0;
+  margin-left: 256px;
+  background: #f4f4f4;
+}
+.app-shell .topbar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 48px;
+  min-height: 48px;
+  padding: 0 16px;
+  background: #161616;
+  color: #f4f4f4;
+  border: 0;
+  border-bottom: 1px solid #393939;
+}
+.app-shell .topbar-left, .app-shell .topbar-right {
+  display: flex;
+  align-items: center;
+  height: 100%;
   min-width: 0;
 }
-.toolbar .cds--search-input,
-.toolbar .cds--list-box,
-.toolbar .cds--dropdown {
+.app-shell .topbar-left { gap: 12px; }
+.app-shell .topbar-right { gap: 4px; }
+.app-shell .header-brand {
+  color: #f4f4f4;
+  font: 400 16px/1 'IBM Plex Sans', sans-serif;
+  letter-spacing: -.2px;
+  white-space: nowrap;
+}
+.app-shell .header-brand strong { font-weight: 600; }
+.app-shell .header-menu-button.cds--btn,
+.app-shell .header-action.cds--btn,
+.app-shell .header-avatar.cds--btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  max-width: 44px;
+  min-height: 48px;
+  height: 48px;
+  padding: 0;
+  background: transparent;
+  color: #f4f4f4;
+  border: 0;
+}
+.app-shell .header-menu-button .cds--btn__icon,
+.app-shell .header-action .cds--btn__icon,
+.app-shell .header-avatar .cds--btn__icon { fill: currentColor; }
+.app-shell .header-menu-button.cds--btn:hover,
+.app-shell .header-action.cds--btn:hover,
+.app-shell .header-avatar.cds--btn:hover { background: #393939; color: #fff; }
+.app-shell .profile-control { position: relative; display: flex; align-items: center; height: 48px; }
+.app-shell .profile-menu,
+.app-shell .header-popover {
+  position: absolute;
+  z-index: 50;
+  top: 48px;
+  right: 0;
+  background: #262626;
+  color: #f4f4f4;
+  border: 1px solid #525252;
+}
+.app-shell .profile-menu { width: 224px; padding: 8px 0; }
+.app-shell .profile-menu-label,
+.app-shell .header-popover-title {
+  padding: 10px 16px;
+  color: #c6c6c6;
+  font-size: 12px;
+  border-bottom: 1px solid #525252;
+}
+.app-shell .profile-menu .profile-menu-item.cds--btn {
+  width: 100%;
+  max-width: none;
+  justify-content: flex-start;
+  padding: 0 16px;
+  color: #f4f4f4;
+}
+.app-shell .profile-menu .profile-menu-item.cds--btn:hover { background: #393939; }
+.app-shell .header-popover { width: min(360px, calc(100vw - 24px)); padding: 12px; }
+.app-shell .header-popover-hint,
+.app-shell .header-notification-empty { padding: 12px 4px 4px; color: #c6c6c6; font-size: 12px; }
+.app-shell .header-popover .cds--search-input { background: #393939; color: #f4f4f4; }
+.app-shell .header-popover .cds--search-input::placeholder { color: #c6c6c6; }
+
+/* Navigation mirrors the IBM Cloud console: black utility bar, charcoal rail. */
+.app-shell .side-nav {
+  position: fixed;
+  z-index: 25;
+  inset: 48px auto 0 0;
+  display: flex;
+  flex-direction: column;
+  width: 256px;
+  padding: 16px 0 20px;
+  overflow-y: auto;
+  background: #262626;
+  color: #f4f4f4;
+  border-right: 1px solid #393939;
+  transform: none;
+  transition: transform .18s ease;
+  box-shadow: none;
+}
+.app-shell .side-nav .nav-primary { padding-bottom: 8px; border-bottom: 1px solid #393939; }
+.app-shell .side-nav .nav-section {
+  padding: 24px 16px 8px;
+  color: #a8a8a8;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.app-shell .side-nav .nav-links { display: flex; flex-direction: column; gap: 0; padding: 0; }
+.app-shell .side-nav .nav-link {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 40px;
+  padding: 0 16px;
+  color: #f4f4f4;
+  border-left: 3px solid transparent;
+  font-size: 14px;
+  line-height: 20px;
+  text-decoration: none;
+}
+.app-shell .side-nav .nav-link svg { width: 18px; height: 18px; flex: 0 0 18px; }
+.app-shell .side-nav .nav-link:hover { background: #353535; color: #fff; }
+.app-shell .side-nav .nav-link.active {
+  background: #393939;
+  border-left-color: #0f62fe;
+  color: #fff;
+  font-weight: 600;
+}
+.app-shell .sidebar-scrim { display: none; }
+
+/* Content grid and Carbon productive type scale. */
+.app-shell .content {
+  width: 100%;
+  max-width: 1760px;
+  min-width: 0;
+  margin: 0 auto;
+  padding: 32px 32px 48px;
   background: #f4f4f4;
+  color: #161616;
+}
+.app-shell [data-testid^="page-"] { min-width: 0; }
+.app-shell .page-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  margin: 0 0 24px;
+}
+.app-shell .page-heading > div:first-child { min-width: 0; }
+.app-shell .page-heading .eyebrow {
+  margin: 0 0 8px;
+  color: #525252;
+  font: 400 12px/16px 'IBM Plex Sans', sans-serif;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.app-shell .page-heading h1 {
+  margin: 0;
+  color: #161616;
+  font: 400 28px/36px 'IBM Plex Sans', sans-serif;
+  letter-spacing: 0;
+  overflow-wrap: anywhere;
+}
+.app-shell .page-heading p {
+  max-width: 720px;
+  margin: 8px 0 0;
+  color: #525252;
+  font: 400 14px/20px 'IBM Plex Sans', sans-serif;
+}
+.app-shell .page-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.app-shell .cds--btn { font-family: 'IBM Plex Sans', sans-serif; }
+.app-shell .cds--btn--primary { background: #0f62fe; color: #fff; }
+.app-shell .cds--btn--primary:hover { background: #0353e9; }
+.app-shell .cds--btn--primary:active { background: #002d9c; }
+.app-shell .cds--btn:focus-visible,
+.app-shell .mobile-record-card:focus-visible,
+.app-shell .shortcut-link:focus-visible { outline: 2px solid #0f62fe; outline-offset: -2px; }
+
+/* Carbon Tile KPI system: clear label/value/note hierarchy, no decorative gradients. */
+.app-shell .dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin: 0 0 24px;
+}
+.app-shell .kpi-card.cds--tile {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 156px;
+  padding: 20px;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  color: #161616;
+}
+.app-shell .kpi-card.cds--tile::before { content: none; }
+.app-shell .kpi-topline { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.app-shell .kpi-label { color: #525252; font-size: 14px; font-weight: 400; line-height: 20px; }
+.app-shell .kpi-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 36px;
+  width: 36px;
+  height: 36px;
+  background: #edf5ff;
+  color: #0f62fe;
+}
+.app-shell .kpi-icon svg { fill: currentColor; }
+.app-shell .kpi-value {
+  margin-top: auto;
+  padding-top: 16px;
+  color: #161616;
+  font: 400 clamp(22px, 2.3vw, 32px)/1.2 'IBM Plex Sans', sans-serif;
+  letter-spacing: -.45px;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.app-shell .kpi-note { margin-top: 6px; color: #6f6f6f; font-size: 12px; line-height: 16px; overflow-wrap: anywhere; }
+
+/* CRM-specific quick workspace: direct access to the main sales workflow. */
+.app-shell .workspace-shortcuts {
+  margin: 0 0 24px;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+}
+.app-shell .section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 56px;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e0e0e0;
+}
+.app-shell .section-head h2 { margin: 0; color: #161616; font-size: 16px; font-weight: 600; line-height: 24px; }
+.app-shell .section-head > span { color: #6f6f6f; font-size: 12px; line-height: 16px; text-align: right; }
+.app-shell .shortcut-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+}
+.app-shell .shortcut-link {
+  display: block;
+  min-width: 0;
+  color: inherit;
+  text-decoration: none;
+  border-right: 1px solid #e0e0e0;
+}
+.app-shell .shortcut-link:last-child { border-right: 0; }
+.app-shell .shortcut-link:hover { background: #f4f4f4; }
+.app-shell .shortcut-tile.cds--tile {
+  display: flex;
+  min-height: 112px;
+  align-items: center;
+  gap: 12px;
+  padding: 20px;
+  background: transparent;
+  border: 0;
+}
+.app-shell .shortcut-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 36px;
+  width: 36px;
+  height: 36px;
+  background: #edf5ff;
+  color: #0f62fe;
+}
+.app-shell .shortcut-icon svg { fill: currentColor; }
+.app-shell .shortcut-copy { display: flex; flex: 1 1 auto; min-width: 0; flex-direction: column; gap: 4px; }
+.app-shell .shortcut-copy strong { color: #161616; font-size: 14px; font-weight: 600; line-height: 20px; }
+.app-shell .shortcut-copy > span { color: #6f6f6f; font-size: 12px; line-height: 16px; }
+.app-shell .shortcut-count { color: #161616; font-size: 20px; font-weight: 400; font-variant-numeric: tabular-nums; }
+.app-shell .shortcut-tile > svg:last-child { flex: 0 0 16px; color: #525252; }
+
+/* Dashboard visualizations and recent records share the same layered surfaces. */
+.app-shell .dashboard-lower { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(280px, .9fr); gap: 16px; margin-bottom: 16px; }
+.app-shell .section-panel, .app-shell .panel, .app-shell .detail-card {
+  min-width: 0;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+}
+.app-shell .chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  height: 240px;
+  min-height: 240px;
+  padding: 24px 24px 20px;
+  background: #fff;
+  border-bottom: 1px solid #e0e0e0;
+}
+.app-shell .chart-col { gap: 8px; }
+.app-shell .bar-track { display: flex; align-items: flex-end; width: min(40px, 76%); height: 164px; background: #e8e8e8; }
+.app-shell .bar-fill { width: 100%; min-height: 2px; background: #0f62fe; }
+.app-shell .bar-label { color: #6f6f6f; font-size: 12px; line-height: 16px; }
+.app-shell .stage-list { padding: 12px 20px 16px; }
+.app-shell .stage-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; padding: 14px 0; border-bottom: 1px solid #e8e8e8; font-size: 14px; line-height: 20px; }
+.app-shell .stage-row:last-child { border-bottom: 0; }
+.app-shell .stage-name { min-width: 0; color: #525252; overflow-wrap: anywhere; }
+.app-shell .stage-meta { color: #161616; font: 400 12px/20px 'IBM Plex Sans', sans-serif; text-align: right; font-variant-numeric: tabular-nums; }
+
+/* Tables and status Tags use Carbon's productive typography and neutral separators. */
+.app-shell .panel { margin: 0; }
+.app-shell .toolbar {
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 16px;
+  min-height: 76px;
+  padding: 16px;
+  background: #fff;
+  border-bottom: 1px solid #e0e0e0;
+}
+.app-shell .toolbar .cds--search { width: min(440px, 100%); flex: 1 1 280px; }
+.app-shell .toolbar .cds--list-box__wrapper { width: 240px; min-width: 180px; flex: 0 1 240px; }
+.app-shell .toolbar .cds--search-input,
+.app-shell .toolbar .cds--list-box,
+.app-shell .toolbar .cds--dropdown {
+  background: #f4f4f4;
+  color: #161616;
   border: 0;
   border-bottom: 1px solid #8d8d8d;
 }
-.toolbar .cds--search-input { color: #161616; }
-.toolbar .cds--search-input::placeholder { color: #8d8d8d; opacity: 1; }
-.toolbar .cds--search-input:focus {
-  outline: 0;
-  border-bottom: 2px solid #0f62fe;
+.app-shell .toolbar .cds--search-input::placeholder { color: #8d8d8d; opacity: 1; }
+.app-shell .toolbar .cds--search-input:focus { outline: 0; border-bottom: 2px solid #0f62fe; }
+.app-shell .toolbar .cds--list-box:focus,
+.app-shell .toolbar .cds--dropdown:focus { outline: 2px solid #0f62fe; outline-offset: -2px; }
+.app-shell .toolbar [data-testid^="text-record-count"] {
+  align-self: center;
+  margin-left: auto !important;
+  color: #525252 !important;
+  font-size: 12px !important;
+  line-height: 16px;
 }
-.toolbar .cds--list-box:focus,
-.toolbar .cds--dropdown:focus {
-  outline: 2px solid #0f62fe;
-  outline-offset: -2px;
-}
-.toolbar .cds--search .cds--search-magnifier,
-.toolbar .cds--search .cds--search-close { color: #525252; }
-.toolbar .cds--list-box__label { color: #525252; }
-
-/* The quote page uses Carbon label-01 and heading-04 hierarchy. */
-[data-testid="page-quotes"] .page-heading .eyebrow {
-  margin: 0 0 8px;
+.app-shell .table-wrap { min-width: 0; overflow: auto; background: #fff; }
+.app-shell .data-table { width: 100%; border-collapse: collapse; text-align: left; font: 400 14px/20px 'IBM Plex Sans', sans-serif; }
+.app-shell .data-table th {
+  padding: 12px 16px;
+  background: #f4f4f4;
   color: #525252;
-  font-family: 'IBM Plex Sans', sans-serif;
-  font-size: 12px;
-  font-weight: 400;
-  line-height: 1rem;
+  border-bottom: 1px solid #c6c6c6;
+  white-space: nowrap;
+  font: 600 12px/16px 'IBM Plex Sans', sans-serif;
   letter-spacing: 0;
   text-transform: none;
 }
-[data-testid="page-quotes"] .page-heading h1 {
-  color: #161616;
-  font-family: 'IBM Plex Sans', sans-serif;
-  font-size: 28px;
-  font-weight: 400;
-  line-height: 2.25rem;
-  letter-spacing: 0;
-}
-[data-testid="page-quotes"] .page-heading p { color: #525252; }
-
-/* Single-column flat Carbon tiles with a single touch target and one trailing icon. */
-.mobile-record-card {
-  min-height: 48px;
-  padding: var(--cds-spacing-05, 16px);
-  gap: 12px;
-  border: 1px solid var(--cds-border-tile-01, #e0e0e0);
-  border-radius: 0;
-  box-shadow: none;
-  background: var(--cds-layer-01, #fff);
-  color: #161616;
-}
-.mobile-record-card:hover { background: #f4f4f4; }
-.mobile-record-card:focus-visible {
-  outline: 2px solid #0f62fe;
-  outline-offset: -2px;
-}
-.mobile-record-card-content { min-width: 0; flex: 1; }
-.mobile-record-card-eyebrow {
-  margin: 0 0 4px;
-  color: #525252;
-  font-family: 'IBM Plex Sans', sans-serif;
-  font-size: 12px;
-  font-weight: 400;
-  line-height: 1rem;
-  letter-spacing: 0;
-  text-transform: none;
-}
-.mobile-record-card-heading {
-  color: #161616;
-  font-family: 'IBM Plex Sans', sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 1.25rem;
-  overflow-wrap: anywhere;
-}
-.mobile-record-card-body {
-  margin-top: 4px;
-  color: #525252;
-  font-family: 'IBM Plex Sans', sans-serif;
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 1.25rem;
-}
-.mobile-record-card-status { margin-top: 8px; }
-.quote-card-status.cds--tag {
+.app-shell .data-table td { padding: 14px 16px; color: #393939; border-bottom: 1px solid #e0e0e0; white-space: nowrap; vertical-align: middle; }
+.app-shell .data-table tbody tr { background: #fff; }
+.app-shell .data-table tbody tr:hover { background: #f4f4f4; }
+.app-shell .record-link { color: #0f62fe; font-size: 14px; font-weight: 600; text-decoration: none; }
+.app-shell .record-link:hover { text-decoration: underline; }
+.app-shell .row-actions { display: flex; align-items: center; gap: 4px; }
+.app-shell .status-tag.cds--tag {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
   min-height: 24px;
   margin: 0;
-  padding: 3px 8px;
-  border: 0;
-  border-radius: 0;
-  font-family: 'IBM Plex Sans', sans-serif;
+  padding: 4px 8px;
+  font: 400 12px/16px 'IBM Plex Sans', sans-serif;
+  white-space: nowrap;
+}
+.app-shell .status-tag.good.cds--tag { background: #e5f6e9; color: #0e6027; }
+.app-shell .status-tag.warn.cds--tag { background: #fff1c7; color: #8a3800; }
+.app-shell .status-tag.bad.cds--tag { background: #fff1f1; color: #a2191f; }
+.app-shell .pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 16px;
+  background: #fff;
+  border-top: 1px solid #e0e0e0;
+  color: #525252;
   font-size: 12px;
-  line-height: 1rem;
+  line-height: 16px;
 }
-.quote-card-status-accepted.cds--tag {
-  background: #e5f6e9;
-  color: #0e6027;
-}
-.mobile-record-card-chevron { width: 16px; height: 16px; flex: 0 0 16px; color: #161616; }
+.app-shell .pagination .page-actions { gap: 8px; }
 
+/* Record details and mobile records remain readable at every viewport width. */
+.app-shell .mobile-card-list { display: none; }
+.app-shell .mobile-record-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  min-width: 0;
+  min-height: 88px;
+  padding: 16px;
+  background: #fff;
+  color: #161616;
+  border: 1px solid #e0e0e0;
+  text-decoration: none;
+}
+.app-shell .mobile-record-card:hover { background: #f4f4f4; color: #161616; }
+.app-shell .mobile-record-card-content { flex: 1 1 auto; min-width: 0; }
+.app-shell .mobile-record-card-eyebrow { margin: 0 0 4px; color: #525252; font-size: 12px; line-height: 16px; }
+.app-shell .mobile-record-card-heading { color: #161616; font-size: 14px; line-height: 20px; font-weight: 600; overflow-wrap: anywhere; }
+.app-shell .mobile-record-card-body { margin-top: 4px; color: #525252; font-size: 14px; line-height: 20px; overflow-wrap: anywhere; }
+.app-shell .mobile-record-card-status { margin-top: 8px; }
+.app-shell .mobile-record-card-chevron { flex: 0 0 16px; width: 16px; height: 16px; color: #161616; }
+.app-shell .detail-layout { display: grid; grid-template-columns: minmax(0, 1fr) 296px; gap: 16px; }
+.app-shell .detail-card-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 20px; background: #fff; border-bottom: 1px solid #e0e0e0; }
+.app-shell .detail-card-header h2 { margin: 0; font-size: 16px; line-height: 24px; font-weight: 600; }
+.app-shell .detail-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.app-shell .detail-field { min-width: 0; padding: 16px 20px; border-bottom: 1px solid #e0e0e0; }
+.app-shell .detail-field:nth-child(odd) { border-right: 1px solid #e0e0e0; }
+.app-shell .detail-label { margin-bottom: 8px; color: #525252; font-size: 12px; line-height: 16px; letter-spacing: 0; text-transform: none; }
+.app-shell .detail-value { color: #161616; font-size: 14px; line-height: 20px; overflow-wrap: anywhere; }
+.app-shell .metadata { padding: 20px; background: #fff; border: 1px solid #e0e0e0; color: #525252; font-size: 12px; line-height: 20px; overflow-wrap: anywhere; }
+.app-shell .metadata strong { display: block; margin-bottom: 12px; color: #161616; font-size: 14px; font-weight: 600; }
+.app-shell .empty-state, .app-shell .error-state { padding: 56px 24px; color: #525252; }
+.app-shell .empty-mark { background: #edf5ff; color: #0f62fe; }
+.app-shell .empty-state h3 { color: #161616; font-size: 16px; font-weight: 600; line-height: 24px; }
+.app-shell .empty-state p { color: #525252; font-size: 14px; line-height: 20px; }
+
+/* Responsive grid: KPI cards stay two-up on phones and never overflow. */
+@media (max-width: 1100px) {
+  .app-shell .content { padding: 28px 24px 40px; }
+  .app-shell .dashboard-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .app-shell .dashboard-lower { grid-template-columns: minmax(0, 1fr); }
+}
 @media (max-width: 760px) {
-  .content { padding: 20px 16px 32px; }
-  [data-testid="page-quotes"] .page-heading {
-    margin-bottom: 24px;
-    gap: 8px;
-  }
-  [data-testid="page-quotes"] .page-heading p { display: none; }
-  [data-testid="page-quotes"] .page-heading .page-actions { width: 100%; }
-  [data-testid="page-quotes"] .page-heading .page-actions .cds--btn { width: 100%; max-width: none; }
-  [data-testid="page-quotes"] .panel {
-    margin: 0;
-    border: 0;
-    background: transparent;
-  }
-  [data-testid="page-quotes"] .toolbar {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 16px;
-    padding: 0 0 16px;
-    border: 0;
-    background: transparent;
-  }
-  [data-testid="page-quotes"] .toolbar .cds--search,
-  [data-testid="page-quotes"] .toolbar .cds--list-box__wrapper,
-  [data-testid="page-quotes"] .toolbar .cds--dropdown {
-    width: 100%;
-    min-width: 0;
-    max-width: none;
-  }
-  [data-testid="page-quotes"] .toolbar [data-testid^="text-record-count"] {
-    margin-left: 0 !important;
-    color: #525252 !important;
-    font-size: 12px !important;
-  }
-  [data-testid="page-quotes"] .mobile-card-list {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    width: 100%;
-    min-width: 0;
-    overflow: visible;
-  }
-  [data-testid="page-quotes"] .desktop-record-table { display: none; }
-  [data-testid="page-quotes"] .mobile-record-card { width: 100%; }
+  .app-shell .main-area { width: 100%; margin-left: 0; }
+  .app-shell .topbar { padding: 0 8px; }
+  .app-shell .topbar-left { gap: 4px; }
+  .app-shell .header-menu-button.cds--btn { display: inline-flex; width: 40px; max-width: 40px; }
+  .app-shell .header-action.cds--btn, .app-shell .header-avatar.cds--btn { width: 40px; max-width: 40px; }
+  .app-shell .header-brand { font-size: 15px; }
+  .app-shell .side-nav { width: min(280px, 86vw); transform: translateX(-102%); visibility: hidden; }
+  .app-shell .side-nav.open { transform: translateX(0); visibility: visible; }
+  .app-shell .sidebar-scrim { display: block; position: fixed; z-index: 24; inset: 48px 0 0; width: 100%; height: auto; padding: 0; border: 0; background: #00000066; }
+  .app-shell .content { padding: 24px 16px 32px; }
+  .app-shell .page-heading { flex-direction: column; gap: 16px; margin-bottom: 24px; }
+  .app-shell .page-heading h1 { font-size: 28px; line-height: 36px; }
+  .app-shell .page-actions { width: 100%; }
+  .app-shell .page-actions .cds--btn { max-width: none; }
+  .app-shell .dashboard-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-bottom: 16px; }
+  .app-shell .kpi-card.cds--tile { min-height: 142px; padding: 16px; }
+  .app-shell .kpi-icon { width: 32px; height: 32px; flex-basis: 32px; }
+  .app-shell .kpi-icon svg { width: 18px; height: 18px; }
+  .app-shell .kpi-value { font-size: clamp(18px, 4.6vw, 26px); padding-top: 12px; }
+  .app-shell .kpi-note { font-size: 11px; line-height: 16px; }
+  .app-shell .workspace-shortcuts { margin-bottom: 16px; }
+  .app-shell .shortcut-grid { grid-template-columns: minmax(0, 1fr); }
+  .app-shell .shortcut-link { border-right: 0; border-bottom: 1px solid #e0e0e0; }
+  .app-shell .shortcut-link:last-child { border-bottom: 0; }
+  .app-shell .shortcut-tile.cds--tile { min-height: 88px; padding: 16px; }
+  .app-shell .toolbar { flex-direction: column; align-items: stretch; gap: 12px; padding: 16px; }
+  .app-shell .toolbar .cds--search, .app-shell .toolbar .cds--list-box__wrapper, .app-shell .toolbar .cds--dropdown { width: 100%; min-width: 0; max-width: none; }
+  .app-shell .toolbar [data-testid^="text-record-count"] { margin-left: 0 !important; align-self: flex-start; }
+  .app-shell .panel { border: 0; background: transparent; }
+  .app-shell .mobile-card-list { display: flex; flex-direction: column; gap: 12px; width: 100%; min-width: 0; overflow: visible; }
+  .app-shell .desktop-record-table { display: none; }
+  .app-shell .detail-layout { grid-template-columns: minmax(0, 1fr); }
+  .app-shell .metadata { overflow-wrap: anywhere; }
+  .app-shell .pagination { align-items: flex-start; flex-direction: column; gap: 12px; }
+  .app-shell .pagination .page-actions { width: 100%; }
+  .app-shell .pagination .page-actions .cds--btn { flex: 1 1 auto; }
+}
+@media (max-width: 420px) {
+  .app-shell .content { padding: 20px 12px 28px; }
+  .app-shell .dashboard-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .app-shell .kpi-card.cds--tile { min-height: 132px; padding: 12px; }
+  .app-shell .kpi-label { font-size: 12px; line-height: 16px; }
+  .app-shell .kpi-value { font-size: clamp(17px, 5vw, 22px); letter-spacing: -.6px; }
+  .app-shell .kpi-note { font-size: 10px; }
+  .app-shell .kpi-icon { width: 28px; height: 28px; flex-basis: 28px; }
+  .app-shell .detail-grid { grid-template-columns: minmax(0, 1fr); }
+  .app-shell .detail-field:nth-child(odd) { border-right: 0; }
+  .app-shell .chart { gap: 8px; padding: 20px 12px 16px; }
+  .app-shell .stage-list { padding: 8px 16px 12px; }
 }
