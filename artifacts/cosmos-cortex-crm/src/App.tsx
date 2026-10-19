@@ -9,6 +9,7 @@ import {
   Delivery as DeliveryIcon, Edit, Menu, Purchase, RequestQuote, Search as SearchIcon,
   Logout, Notification, TrashCan, UserAvatar, UserFollow, UserMultiple, ChevronRight,
 } from '@carbon/icons-react';
+import { Tag } from '@carbon/react';
 import {
   getGetDashboardQueryKey, getGetCrmRecordQueryKey, getListCrmRecordsQueryKey,
   useCreateCrmRecord, useDeleteCrmRecord, useGetCrmRecord, useGetDashboard,
@@ -435,7 +436,7 @@ function ResourcePage({ entity, lang }: { entity: CrmEntity; lang: Lang }) {
                     <div className="mobile-record-card-eyebrow">{displayLabel(titleKey, lang)}</div>
                     <div className="mobile-record-card-heading">{cardTitle}</div>
                     {cardBody && <div className="mobile-record-card-body">{displayLabel(bodyKey!, lang)}: {cardBody}</div>}
-                    {statusKey && <div className="mobile-record-card-status"><StatusPill value={String(item.data[statusKey] ?? '—')} lang={lang} /></div>}
+                    {statusKey && <div className="mobile-record-card-status"><Tag className={entity === 'quotes' && item.data[statusKey] === 'accepted' ? 'quote-card-status quote-card-status-accepted' : 'quote-card-status'} type={entity === 'quotes' && item.data[statusKey] === 'accepted' ? 'green' : 'gray'}>{displayEnumValue(String(item.data[statusKey] ?? '—'), lang)}</Tag></div>}
                   </div>
                   <ChevronRight className="mobile-record-card-chevron" size={20} aria-hidden="true" />
                 </Link>;
