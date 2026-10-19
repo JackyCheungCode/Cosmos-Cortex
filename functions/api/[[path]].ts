@@ -127,6 +127,42 @@ async function callSupabase(
 }
 
 
+async function getAuthenticatedUserId(request: Request, env: Env): Promise<string> {
+  const baseUrl = env.SUPABASE_URL?.replace(/\\/+$/, "");
+  const anonKey = env.SUPABASE_ANON_KEY;
+  const authorization = request.headers.get("authorization");
+  if (!baseUrl || !anonKey) {
+    throw new Response(JSON.stringify({ error: "Supabase is not configured for Cloudflare Pages." }), {
+      status: 503,
+      headers: { "content-type": "application/json" },
+    });
+  }
+  if (!authorization?.startsWith("Bearer ")) {
+    throw new Response(JSON.stringify({ error: "Sign in to your CRM account to continue." }), {
+      status: 401,
+      headers: { "content-type": "application/json" },
+    });
+  }
+
+  const response = await fetch(baseUrl + "/auth/v1/user", {
+    headers: { apikey: anonKey, authorization, accept: "application/json" },
+  });
+  if (!response.ok) {
+    throw new Response(JSON.stringify({ error: "Your CRM session is invalid or expired. Please sign in again." }), {
+      status: response.status === 401 ? 401 : 502,
+      headers: { "content-type": "application/json" },
+    });
+  }
+  const user = await response.json() as { id?: unknown };
+  if (typeof user.id !== "string" || !user.id) {
+    throw new Response(JSON.stringify({ error: "Unable to verify the signed-in CRM user." }), {
+      status: 401,
+      headers: { "content-type": "application/json" },
+    });
+  }
+  return user.id;
+}
+
 async function routeAuth(request: Request, env: Env, url: URL): Promise<Response | null> {
   const path = url.pathname.replace(/\/+$/, "");
   if (path !== "/api/auth/resolve-account" && path !== "/api/auth/sign-in-username") return null;
@@ -241,6 +277,9 @@ async function routeCrm(
     if (!body.data || typeof body.data !== "object" || Array.isArray(body.data)) {
       return json({ error: "A record data object is required." }, 400);
     }
+    // Derive ownership from the verified Supabase session, never from client input.
+    const ownerId = await getAuthenticatedUserId(request, env);
+    const recordData = { ...sanitizeRecordData(body.data), owner_id: ownerId };
     const { payload } = await callSupabase(
       request,
       env,
@@ -251,7 +290,7 @@ async function routeCrm(
           "content-type": "application/json",
           prefer: "return=representation",
         },
-        body: JSON.stringify(sanitizeRecordData(body.data)),
+        body: JSON.stringify(recordData),
       },
     );
     const row = Array.isArray(payload) ? payload[0] : payload;
