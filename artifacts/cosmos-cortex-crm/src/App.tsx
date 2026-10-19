@@ -180,7 +180,7 @@ function AppShell({ children, lang, setLang, onSignOut }: { children: ReactNode;
   const label = (zh: string, en: string) => lang === 'zh' ? zh : en;
   const currentModule = modules.find((m) => path.startsWith(`/${m.entity}`));
   const go = (href: string) => { setLocation(href); setNavOpen(false); setProfileOpen(false); setSearchOpen(false); setNotificationOpen(false); };
-  const submitGlobalSearch = (event: React.FormEvent<HTMLFormElement>) => {
+  const submitGlobalSearch = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setSearchOpen(false);
     if (globalSearch.trim()) setLocation(`/leads?search=${encodeURIComponent(globalSearch.trim())}`);
@@ -231,7 +231,7 @@ function AppShell({ children, lang, setLang, onSignOut }: { children: ReactNode;
           </div>
         </div>
       </header>
-      <main className="content" onClick={() => { if (profileOpen) setProfileOpen(false); }}>{children}</main>
+      <main className="content" onClick={() => { if (profileOpen) setProfileOpen(false); if (searchOpen) setSearchOpen(false); if (notificationOpen) setNotificationOpen(false); }}>{children}</main>
     </div>
   </div>;
 }
@@ -284,7 +284,7 @@ function ResourcePage({ entity, lang }: { entity: CrmEntity; lang: Lang }) {
   const params = useParams<{ id?: string }>();
   const id = params.id;
   const zh = lang === 'zh';
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState(() => new URLSearchParams(window.location.search).get('search') ?? '');
   const [status, setStatus] = useState('');
   const [page, setPage] = useState(1);
   const [modal, setModal] = useState<'create' | 'edit' | 'delete' | null>(null);
