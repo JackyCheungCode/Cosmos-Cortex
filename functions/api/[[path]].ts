@@ -128,7 +128,7 @@ async function callSupabase(
 
 
 async function getAuthenticatedUserId(request: Request, env: Env): Promise<string> {
-  const baseUrl = env.SUPABASE_URL?.replace(/\\/+$/, "");
+  const baseUrl = env.SUPABASE_URL?.replace(/\/+$/, "");
   const anonKey = env.SUPABASE_ANON_KEY;
   const authorization = request.headers.get("authorization");
   if (!baseUrl || !anonKey) {
