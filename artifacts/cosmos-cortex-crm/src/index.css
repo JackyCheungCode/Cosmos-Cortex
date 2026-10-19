@@ -493,3 +493,75 @@ a.record-link, .content a:not(.nav-link) { color: #0f62fe; }
 .cds--checkbox:checked + .cds--checkbox-label::before { background-color: #0f62fe; border-color: #0f62fe; }
 .cds--radio-button:checked + .cds--radio-button__label .cds--radio-button__appearance { border-color: #0f62fe; }
 .cds--date-picker__input:focus, .cds--text-input:focus, .cds--text-area:focus { outline-color: #0f62fe; }
+
+
+/* Mobile card list — Carbon Design System v11 flat tile pattern */
+.mobile-card-list { display: none; }
+.mobile-record-card {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+  min-height: 64px;
+  padding: 16px;
+  border: 1px solid var(--cds-border-tile-01, #e0e0e0);
+  border-radius: 0;
+  box-shadow: none;
+  background: var(--cds-layer-01, #f4f4f4);
+  color: var(--cds-text-primary, #161616);
+  text-decoration: none;
+  cursor: pointer;
+}
+.mobile-record-card:hover { background: var(--cds-layer-hover-01, #e8e8e8); color: var(--cds-text-primary, #161616); }
+.mobile-record-card:focus-visible {
+  outline: 2px solid var(--cds-focus, #0f62fe);
+  outline-offset: -2px;
+}
+.mobile-record-card-content { flex: 1 1 auto; min-width: 0; }
+.mobile-record-card-eyebrow {
+  margin-bottom: 4px;
+  color: var(--cds-text-secondary, #525252);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 400;
+  text-transform: none;
+}
+.mobile-record-card-heading {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--cds-text-primary, #161616);
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+.mobile-record-card-body {
+  display: -webkit-box;
+  margin-top: 4px;
+  overflow: hidden;
+  color: var(--cds-text-secondary, #525252);
+  font-size: 14px;
+  line-height: 20px;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+.mobile-record-card-status { margin-top: 8px; }
+.mobile-record-card-chevron { flex: 0 0 20px; color: var(--cds-icon-primary, #161616); }
+@media (max-width: 760px) {
+  .content { padding: 20px 16px 32px; }
+  .mobile-card-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+    min-width: 0;
+  }
+  .desktop-record-table { display: none; }
+  [data-testid^="page-"] > .panel { min-width: 0; }
+}
