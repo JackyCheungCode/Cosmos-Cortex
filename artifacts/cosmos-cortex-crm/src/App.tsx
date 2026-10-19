@@ -461,7 +461,7 @@ function LoginPage({ lang, setLang, onSignIn }: { lang: Lang; setLang: (lang: La
   const resetStep = () => { setStep('identifier'); setPassword(''); setError(''); };
   return <main className="login-screen" data-testid="page-login">
     <section className="login-primary">
-      <div className="login-brand-row">
+      <div className="login-brand-row" aria-label="Cosmos Cortex">
         <div className="cosmos-brain-mark" aria-hidden="true"><svg viewBox="0 0 64 64" role="img" aria-label="Cosmos Cortex">
           <path d="M31.8 13.5c-2.1-5.2-9.5-5.8-13.2-1.7-3.1 3.4-2.8 7.1-1.2 9.7-5.1.8-8.2 5.2-7.1 10.2.5 2.2 1.8 4 3.7 5.1-3.1 3.2-2.8 8.4.8 11.2 2 1.6 4.5 2.1 6.9 1.5 1.4 4.6 6.4 7 10.2 4.6V13.5Z" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round"/>
           <path d="M32.2 13.5c2.1-5.2 9.5-5.8 13.2-1.7 3.1 3.4 2.8 7.1 1.2 9.7 5.1.8 8.2 5.2 7.1 10.2-.5 2.2-1.8 4-3.7 5.1 3.1 3.2 2.8 8.4-.8 11.2-2 1.6-4.5 2.1-6.9 1.5-1.4 4.6-6.4 7-10.2 4.6V13.5Z" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round"/>
@@ -474,8 +474,6 @@ function LoginPage({ lang, setLang, onSignIn }: { lang: Lang; setLang: (lang: La
         <p className="login-slogan">Think Like the Universe.</p>
         <div className="login-form">
           {step === 'identifier' ? <form onSubmit={resolveAccount}>
-            <label className="login-label" htmlFor="login-identifier">{mode === 'email' ? (zh ? '电子邮箱' : 'Email address') : (zh ? '管理员分配的账户名' : 'Assigned account name')}</label>
-            <input id="login-identifier" className="login-input" type={mode === 'email' ? 'email' : 'text'} autoComplete="username" value={identifier} onChange={(event) => setIdentifier(event.currentTarget.value)} required autoFocus />
             <div className="login-mode-wrap">
               <button className="login-mode-trigger" type="button" aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}><span>{mode === 'email' ? (zh ? '邮件地址登录' : 'Sign in with email') : (zh ? '管理员分配的账户登录' : 'Sign in with assigned account')}</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m3 6 5 5 5-5" fill="none" stroke="currentColor" strokeWidth="1.5"/></svg></button>
               {menuOpen && <div className="login-mode-menu" role="listbox" aria-label={zh ? '登录方式' : 'Sign-in method'}>
@@ -483,6 +481,8 @@ function LoginPage({ lang, setLang, onSignIn }: { lang: Lang; setLang: (lang: La
                 <button type="button" role="option" aria-selected={mode === 'username'} onClick={() => { setMode('username'); setMenuOpen(false); setIdentifier(''); setError(''); }}>{zh ? '管理员分配的账户登录' : 'Sign in with assigned account'}</button>
               </div>}
             </div>
+            <label className="login-label" htmlFor="login-identifier">{mode === 'email' ? (zh ? '电子邮箱' : 'Email address') : (zh ? '管理员分配的账户名' : 'Assigned account name')}</label>
+            <input id="login-identifier" className="login-input" type={mode === 'email' ? 'email' : 'text'} autoComplete="username" value={identifier} onChange={(event) => setIdentifier(event.currentTarget.value)} required autoFocus />
             {error && <div className="login-error" role="alert">{error}</div>}
             {pending ? <div className="login-pending">{zh ? '正在检查账户…' : 'Checking account…'}</div> : <button className="login-submit" type="submit">{zh ? '继续' : 'Continue'} <span aria-hidden="true">→</span></button>}
           </form> : <form onSubmit={submitPassword}>
