@@ -424,17 +424,81 @@ function ResourcePage({ entity, lang }: { entity: CrmEntity; lang: Lang }) {
 
 function LoginPage({ lang, setLang, onSignIn }: { lang: Lang; setLang: (lang: Lang) => void; onSignIn?: (credentials: { email: string; password: string }) => void | Promise<void> }) {
   const zh = lang === 'zh';
-  const [email, setEmail] = useState('');
+  const [mode, setMode] = useState<'email' | 'username'>('email');
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [identifier, setIdentifier] = useState('');
+  const [resolvedEmail, setResolvedEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [step, setStep] = useState<'identifier' | 'password'>('identifier');
   const [pending, setPending] = useState(false);
   const [error, setError] = useState('');
-  const submit = async (event: FormEvent) => { event.preventDefault(); setError(''); setPending(true); try { await onSignIn?.({ email, password }); } catch { setError(zh ? '登录未能完成，请重试。' : 'Sign-in could not be completed. Try again.'); } finally { setPending(false); } };
-  return <div className="login-screen" data-testid="page-login">
-    <section className="login-identity"><Link href="/" className="brand" data-testid="link-login-brand"><div className="brand-mark">C</div><div><div className="brand-name">Cosmos CRM</div><div className="brand-caption">Revenue workspace</div></div></Link><div><div className="eyebrow" style={{ color: '#9dc8cb' }}>{zh ? '客户到现金 · 一体化运营' : 'CUSTOMER TO CASH · CONNECTED OPERATIONS'}</div><h1>{zh ? '销售推进，回款有据。' : 'Move deals forward. Know what lands.'}</h1><p>{zh ? '让每一次客户互动，都清晰连接到机会、订单、交付与收入。' : 'Keep every customer conversation connected to opportunity, order, delivery, and revenue.'}</p></div><div className="login-aside-foot">COSMOS CRM　/　OWNER WORKSPACE</div></section>
-    <section className="login-form-side"><div className="login-box"><div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}><div><h2>{zh ? '登录工作区' : 'Sign in to workspace'}</h2><p>{zh ? '使用工作区所有者账户继续。' : 'Continue with your workspace owner account.'}</p></div><Button className="language-toggle" kind="tertiary" size="sm" onClick={() => setLang(zh ? 'en' : 'zh')} data-testid="button-login-language">{zh ? 'EN' : '简体中文'}</Button></div>
-      <form onSubmit={submit}><TextInput id="login-email" type="email" labelText={zh ? '电子邮箱' : 'Email address'} autoComplete="username" value={email} onChange={(event) => setEmail(event.currentTarget.value)} required data-testid="input-login-email" /><PasswordInput id="login-password" labelText={zh ? '密码' : 'Password'} autoComplete="current-password" value={password} onChange={(event) => setPassword(event.currentTarget.value)} required data-testid="input-login-password" />{error && <InlineNotification kind="error" title={error} hideCloseButton />}{pending ? <InlineLoading description={zh ? '正在登录…' : 'Signing in…'} /> : <Button type="submit" kind="primary" data-testid="button-login-submit">{zh ? '登录' : 'Sign in'}</Button>}</form>
-      <div className="login-footnote">{zh ? '此工作区仅供所有者本人使用。登录凭据由安全身份服务验证。' : 'This workspace is for its owner only. Credentials are verified by the connected identity service.'}</div></div></section>
-  </div>;
+  const resolveAccount = async (event: FormEvent) => {
+    event.preventDefault(); setError(''); setPending(true);
+    try {
+      const response = await fetch('/api/auth/resolve-account', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ identifier: identifier.trim(), mode }) });
+      const result = await response.json() as { exists?: boolean };
+      if (!response.ok || !result.exists) throw new Error('Account not found');
+      setResolvedEmail(mode === 'email' ? identifier.trim() : '');
+      setStep('password');
+    } catch { setError(zh ? '无法验证此账户。请检查输入，或稍后重试。' : 'We could not verify this account. Check the entry or try again later.'); }
+    finally { setPending(false); }
+  };
+  const submitPassword = async (event: FormEvent) => {
+    event.preventDefault(); setError(''); setPending(true);
+    try {
+      if (mode === 'username') {
+        const response = await fetch('/api/auth/sign-in-username', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ username: identifier.trim(), password }) });
+        const result = await response.json() as { access_token?: string; refresh_token?: string };
+        if (!response.ok || !result.access_token || !result.refresh_token || !supabase) throw new Error('Sign-in failed');
+        const { error: sessionError } = await supabase.auth.setSession({ access_token: result.access_token, refresh_token: result.refresh_token });
+        if (sessionError) throw sessionError;
+      } else {
+        await onSignIn?.({ email: resolvedEmail || identifier.trim(), password });
+      }
+    } catch { setError(zh ? '登录失败，请检查密码后重试。' : 'Sign-in failed. Check your password and try again.'); }
+    finally { setPending(false); }
+  };
+  const resetStep = () => { setStep('identifier'); setPassword(''); setError(''); };
+  return <main className="login-screen" data-testid="page-login">
+    <section className="login-primary">
+      <div className="login-brand-row">
+        <div className="cosmos-brain-mark" aria-hidden="true"><svg viewBox="0 0 64 64" role="img" aria-label="Cosmos Cortex">
+          <path d="M31.8 13.5c-2.1-5.2-9.5-5.8-13.2-1.7-3.1 3.4-2.8 7.1-1.2 9.7-5.1.8-8.2 5.2-7.1 10.2.5 2.2 1.8 4 3.7 5.1-3.1 3.2-2.8 8.4.8 11.2 2 1.6 4.5 2.1 6.9 1.5 1.4 4.6 6.4 7 10.2 4.6V13.5Z" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round"/>
+          <path d="M32.2 13.5c2.1-5.2 9.5-5.8 13.2-1.7 3.1 3.4 2.8 7.1 1.2 9.7 5.1.8 8.2 5.2 7.1 10.2-.5 2.2-1.8 4-3.7 5.1 3.1 3.2 2.8 8.4-.8 11.2-2 1.6-4.5 2.1-6.9 1.5-1.4 4.6-6.4 7-10.2 4.6V13.5Z" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round"/>
+          <path d="M22 19c4 1 5 4 4 7m-11 5c5-1 8 2 8 6m-2 10c3-2 6-1 8 2m13-30c-4 1-5 4-4 7m11 5c-5-1-8 2-8 6m2 10c-3-2-6-1-8 2M32 14v39" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round"/>
+        </svg></div>
+        <div className="login-brand-name">Cosmos <strong>Cortex</strong></div>
+      </div>
+      <div className="login-content">
+        <h1>{zh ? '登录到 Cosmos Cortex' : 'Sign in to Cosmos Cortex'}</h1>
+        <p className="login-slogan">Think Like the Universe.</p>
+        <div className="login-form">
+          {step === 'identifier' ? <form onSubmit={resolveAccount}>
+            <label className="login-label" htmlFor="login-identifier">{mode === 'email' ? (zh ? '电子邮箱' : 'Email address') : (zh ? '管理员分配的账户名' : 'Assigned account name')}</label>
+            <input id="login-identifier" className="login-input" type={mode === 'email' ? 'email' : 'text'} autoComplete="username" value={identifier} onChange={(event) => setIdentifier(event.currentTarget.value)} required autoFocus />
+            <div className="login-mode-wrap">
+              <button className="login-mode-trigger" type="button" aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}><span>{mode === 'email' ? (zh ? '邮件地址登录' : 'Sign in with email') : (zh ? '管理员分配的账户登录' : 'Sign in with assigned account')}</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m3 6 5 5 5-5" fill="none" stroke="currentColor" strokeWidth="1.5"/></svg></button>
+              {menuOpen && <div className="login-mode-menu" role="listbox" aria-label={zh ? '登录方式' : 'Sign-in method'}>
+                <button type="button" role="option" aria-selected={mode === 'email'} onClick={() => { setMode('email'); setMenuOpen(false); setIdentifier(''); setError(''); }}>{zh ? '邮件地址登录' : 'Sign in with email'}</button>
+                <button type="button" role="option" aria-selected={mode === 'username'} onClick={() => { setMode('username'); setMenuOpen(false); setIdentifier(''); setError(''); }}>{zh ? '管理员分配的账户登录' : 'Sign in with assigned account'}</button>
+              </div>}
+            </div>
+            {error && <div className="login-error" role="alert">{error}</div>}
+            {pending ? <div className="login-pending">{zh ? '正在检查账户…' : 'Checking account…'}</div> : <button className="login-submit" type="submit">{zh ? '继续' : 'Continue'} <span aria-hidden="true">→</span></button>}
+          </form> : <form onSubmit={submitPassword}>
+            <div className="login-identity-summary"><div className="login-summary-label">{mode === 'email' ? (zh ? '电子邮箱' : 'Email address') : (zh ? '账户名' : 'Account name')}</div><div className="login-summary-value">{identifier}</div><button type="button" className="login-change" onClick={resetStep}>{zh ? '更改' : 'Change'}</button></div>
+            <label className="login-label" htmlFor="login-password">{zh ? '密码' : 'Password'}</label>
+            <input id="login-password" className="login-input" type="password" autoComplete="current-password" value={password} onChange={(event) => setPassword(event.currentTarget.value)} required autoFocus />
+            {error && <div className="login-error" role="alert">{error}</div>}
+            {pending ? <div className="login-pending">{zh ? '正在登录…' : 'Signing in…'}</div> : <button className="login-submit" type="submit">{zh ? '登录' : 'Sign in'} <span aria-hidden="true">→</span></button>}
+          </form>}
+          <div className="login-contact">{zh ? '没有账户？' : 'No account?'} <a href="mailto:xg.y@outlook.com">{zh ? '联系我们' : 'Contact us'}</a></div>
+        </div>
+      </div>
+      <footer className="login-copyright">© {new Date().getFullYear()} Cosmos Cortex. All rights reserved.</footer>
+    </section>
+    <aside className="login-secondary" aria-hidden="true" />
+  </main>;
 }
 
 function Router({ lang, setLang, onSignIn, onSignOut }: { lang: Lang; setLang: (lang: Lang) => void; onSignIn?: (credentials: { email: string; password: string }) => void | Promise<void>; onSignOut: () => void }) {
