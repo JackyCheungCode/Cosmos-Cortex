@@ -2,6 +2,8 @@ interface Env {
   SUPABASE_URL?: string;
   SUPABASE_ANON_KEY?: string;
   SUPABASE_SERVICE_ROLE_KEY?: string;
+  VITE_SUPABASE_URL?: string;
+  VITE_SUPABASE_ANON_KEY?: string;
 }
 
 interface PagesContext {
@@ -87,8 +89,8 @@ async function callSupabase(
   path: string,
   init: RequestInit = {},
 ): Promise<{ payload: unknown; response: Response }> {
-  const baseUrl = env.SUPABASE_URL?.replace(/\/+$/, "");
-  const anonKey = env.SUPABASE_ANON_KEY;
+  const baseUrl = (env.SUPABASE_URL || env.VITE_SUPABASE_URL)?.replace(/\/+$/, "");
+  const anonKey = env.SUPABASE_ANON_KEY || env.VITE_SUPABASE_ANON_KEY;
   const authorization = request.headers.get("authorization");
   if (!baseUrl || !anonKey) {
     throw new Response(
@@ -167,8 +169,8 @@ async function routeAuth(request: Request, env: Env, url: URL): Promise<Response
   const path = url.pathname.replace(/\/+$/, "");
   if (path !== "/api/auth/resolve-account" && path !== "/api/auth/sign-in-username") return null;
   if (request.method !== "POST") return json({ error: "Method not allowed." }, 405);
-  const baseUrl = env.SUPABASE_URL?.replace(/\/+$/, "");
-  const anonKey = env.SUPABASE_ANON_KEY;
+  const baseUrl = (env.SUPABASE_URL || env.VITE_SUPABASE_URL)?.replace(/\/+$/, "");
+  const anonKey = env.SUPABASE_ANON_KEY || env.VITE_SUPABASE_ANON_KEY;
   const serviceKey = env.SUPABASE_SERVICE_ROLE_KEY;
   if (!baseUrl || !anonKey || !serviceKey) return json({ error: "Account sign-in is not configured." }, 503);
   let body: { identifier?: unknown; mode?: unknown; username?: unknown; password?: unknown };
@@ -378,6 +380,9 @@ export async function onRequest(context: PagesContext): Promise<Response> {
 
   try {
     const url = new URL(request.url);
+    if (url.pathname.replace(/\\/+$/, \"\") === \"/api/health\") {
+      return json({ ok: true, runtime: \"pages-function\", supabaseUrlConfigured: Boolean(env.SUPABASE_URL || env.VITE_SUPABASE_URL), supabaseAnonKeyConfigured: Boolean(env.SUPABASE_ANON_KEY || env.VITE_SUPABASE_ANON_KEY), serviceRoleKeyConfigured: Boolean(env.SUPABASE_SERVICE_ROLE_KEY) });
+    }
     const authResponse = await routeAuth(request, env, url);
     if (authResponse) {
       const headers = new Headers(authResponse.headers);
