@@ -566,3 +566,190 @@ a.record-link, .content a:not(.nav-link) { color: #0f62fe; }
   .desktop-record-table { display: none; }
   [data-testid^="page-"] > .panel { min-width: 0; }
 }
+
+
+/* Carbon v11 mobile quote-list refinement */
+:root {
+  font-family: 'IBM Plex Sans', sans-serif;
+  --cds-font-family: 'IBM Plex Sans', sans-serif;
+  --cds-interactive: #0f62fe;
+  --cds-focus: #0f62fe;
+  --cds-background: #ffffff;
+  --cds-layer-01: #ffffff;
+  --cds-layer-02: #f4f4f4;
+  --cds-text-primary: #161616;
+  --cds-text-secondary: #525252;
+  --cds-border-tile-01: #e0e0e0;
+  --cds-spacing-05: 1rem;
+}
+
+/* Strict flat geometry: no rounded corners or decorative shadows anywhere. */
+*, *::before, *::after {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+body { background: #fff; color: #161616; font-family: 'IBM Plex Sans', sans-serif; }
+.app-shell, .main-area, .content { background: #fff; color: #161616; }
+.topbar { background: #161616; color: #f4f4f4; }
+.cds--btn--primary, .cds--btn--primary:focus { background: #0f62fe; }
+.cds--btn--primary:hover { background: #0353e9; }
+.cds--btn--primary:active { background: #002d9c; }
+
+/* Carbon Search and Dropdown controls: fluid, gray field surface, bottom rule only. */
+.toolbar .cds--search,
+.toolbar .cds--list-box__wrapper,
+.toolbar .cds--dropdown,
+.toolbar .cds--list-box {
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+}
+.toolbar .cds--search-input,
+.toolbar .cds--list-box,
+.toolbar .cds--dropdown {
+  background: #f4f4f4;
+  border: 0;
+  border-bottom: 1px solid #8d8d8d;
+}
+.toolbar .cds--search-input { color: #161616; }
+.toolbar .cds--search-input::placeholder { color: #8d8d8d; opacity: 1; }
+.toolbar .cds--search-input:focus {
+  outline: 0;
+  border-bottom: 2px solid #0f62fe;
+}
+.toolbar .cds--list-box:focus,
+.toolbar .cds--dropdown:focus {
+  outline: 2px solid #0f62fe;
+  outline-offset: -2px;
+}
+.toolbar .cds--search .cds--search-magnifier,
+.toolbar .cds--search .cds--search-close { color: #525252; }
+.toolbar .cds--list-box__label { color: #525252; }
+
+/* The quote page uses Carbon label-01 and heading-04 hierarchy. */
+[data-testid="page-quotes"] .page-heading .eyebrow {
+  margin: 0 0 8px;
+  color: #525252;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1rem;
+  letter-spacing: 0;
+  text-transform: none;
+}
+[data-testid="page-quotes"] .page-heading h1 {
+  color: #161616;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 28px;
+  font-weight: 400;
+  line-height: 2.25rem;
+  letter-spacing: 0;
+}
+[data-testid="page-quotes"] .page-heading p { color: #525252; }
+
+/* Single-column flat Carbon tiles with a single touch target and one trailing icon. */
+.mobile-record-card {
+  min-height: 48px;
+  padding: var(--cds-spacing-05, 16px);
+  gap: 12px;
+  border: 1px solid var(--cds-border-tile-01, #e0e0e0);
+  border-radius: 0;
+  box-shadow: none;
+  background: var(--cds-layer-01, #fff);
+  color: #161616;
+}
+.mobile-record-card:hover { background: #f4f4f4; }
+.mobile-record-card:focus-visible {
+  outline: 2px solid #0f62fe;
+  outline-offset: -2px;
+}
+.mobile-record-card-content { min-width: 0; flex: 1; }
+.mobile-record-card-eyebrow {
+  margin: 0 0 4px;
+  color: #525252;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1rem;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.mobile-record-card-heading {
+  color: #161616;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.25rem;
+  overflow-wrap: anywhere;
+}
+.mobile-record-card-body {
+  margin-top: 4px;
+  color: #525252;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.25rem;
+}
+.mobile-record-card-status { margin-top: 8px; }
+.quote-card-status.cds--tag {
+  min-height: 24px;
+  margin: 0;
+  padding: 3px 8px;
+  border: 0;
+  border-radius: 0;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 12px;
+  line-height: 1rem;
+}
+.quote-card-status-accepted.cds--tag {
+  background: #e5f6e9;
+  color: #0e6027;
+}
+.mobile-record-card-chevron { width: 16px; height: 16px; flex: 0 0 16px; color: #161616; }
+
+@media (max-width: 760px) {
+  .content { padding: 20px 16px 32px; }
+  [data-testid="page-quotes"] .page-heading {
+    margin-bottom: 24px;
+    gap: 8px;
+  }
+  [data-testid="page-quotes"] .page-heading p { display: none; }
+  [data-testid="page-quotes"] .page-heading .page-actions { width: 100%; }
+  [data-testid="page-quotes"] .page-heading .page-actions .cds--btn { width: 100%; max-width: none; }
+  [data-testid="page-quotes"] .panel {
+    margin: 0;
+    border: 0;
+    background: transparent;
+  }
+  [data-testid="page-quotes"] .toolbar {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+    padding: 0 0 16px;
+    border: 0;
+    background: transparent;
+  }
+  [data-testid="page-quotes"] .toolbar .cds--search,
+  [data-testid="page-quotes"] .toolbar .cds--list-box__wrapper,
+  [data-testid="page-quotes"] .toolbar .cds--dropdown {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+  }
+  [data-testid="page-quotes"] .toolbar [data-testid^="text-record-count"] {
+    margin-left: 0 !important;
+    color: #525252 !important;
+    font-size: 12px !important;
+  }
+  [data-testid="page-quotes"] .mobile-card-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+    min-width: 0;
+    overflow: visible;
+  }
+  [data-testid="page-quotes"] .desktop-record-table { display: none; }
+  [data-testid="page-quotes"] .mobile-record-card { width: 100%; }
+}
