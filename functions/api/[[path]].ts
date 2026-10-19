@@ -380,8 +380,8 @@ export async function onRequest(context: PagesContext): Promise<Response> {
 
   try {
     const url = new URL(request.url);
-    if (url.pathname.replace(/\\/+$/, \"\") === \"/api/health\") {
-      return json({ ok: true, runtime: \"pages-function\", supabaseUrlConfigured: Boolean(env.SUPABASE_URL || env.VITE_SUPABASE_URL), supabaseAnonKeyConfigured: Boolean(env.SUPABASE_ANON_KEY || env.VITE_SUPABASE_ANON_KEY), serviceRoleKeyConfigured: Boolean(env.SUPABASE_SERVICE_ROLE_KEY) });
+    if (url.pathname.replace(/\/+$/, "") === "/api/health") {
+      return json({ ok: true, runtime: "pages-function", supabaseUrlConfigured: Boolean(env.SUPABASE_URL || env.VITE_SUPABASE_URL), supabaseAnonKeyConfigured: Boolean(env.SUPABASE_ANON_KEY || env.VITE_SUPABASE_ANON_KEY), serviceRoleKeyConfigured: Boolean(env.SUPABASE_SERVICE_ROLE_KEY) });
     }
     const authResponse = await routeAuth(request, env, url);
     if (authResponse) {
