@@ -7,7 +7,7 @@ import {
 import {
   Add, ArrowLeft, Building, ChartRelationship, Currency, Dashboard as DashboardIcon,
   Delivery as DeliveryIcon, Edit, Menu, Purchase, RequestQuote, Search as SearchIcon,
-  Logout, Notification, TrashCan, UserAvatar, UserFollow, UserMultiple,
+  Logout, Notification, TrashCan, UserAvatar, UserFollow, UserMultiple, ChevronRight,
 } from '@carbon/icons-react';
 import {
   getGetDashboardQueryKey, getGetCrmRecordQueryKey, getListCrmRecordsQueryKey,
@@ -400,7 +400,7 @@ function ResourcePage({ entity, lang }: { entity: CrmEntity; lang: Lang }) {
           list.isError ? <div className="error-state" data-testid="state-error"><InlineNotification kind="error" title={zh ? '记录加载失败' : 'Could not load records'} subtitle={`${zh ? '原始错误：' : 'Raw error: '}${list.error instanceof Error ? list.error.message : String(list.error ?? 'Unknown error')}`} /><Button kind="ghost" size="sm" onClick={() => list.refetch()} data-testid="button-retry-list">{zh ? '重试' : 'Retry'}</Button></div> :
           !list.data?.items.length ? <EmptyState zh={zh} title={zh ? '还没有记录' : 'No records yet'} detail={search || status ? (zh ? '请调整搜索条件或筛选状态。' : 'Try changing your search or status filter.') : (zh ? `创建第一条${heading}记录，开始追踪业务进展。` : `Create your first ${mod.en.toLowerCase()} record to get started.`)} action={!search && !status ? <Button kind="tertiary" size="sm" renderIcon={Add} onClick={beginCreate} data-testid={`button-empty-create-${entity}`}>{zh ? '创建记录' : 'Create record'}</Button> : undefined} /> :
           <>
-            <div className="table-wrap">
+            <div className="table-wrap desktop-record-table">
               <table className="data-table">
                 <thead><tr>{mod.columns.map((key) => <th key={key}>{displayLabel(key, lang)}</th>)}<th>{zh ? '操作' : 'Actions'}</th></tr></thead>
                 <tbody>{list.data.items.map((item) => (
@@ -421,6 +421,25 @@ function ResourcePage({ entity, lang }: { entity: CrmEntity; lang: Lang }) {
                   </tr>
                 ))}</tbody>
               </table>
+            </div>
+            <div className="mobile-card-list" role="list" aria-label={zh ? `${heading}卡片列表` : `${mod.en} card list`} data-testid={`mobile-card-list-${entity}`}>
+              {list.data.items.map((item) => {
+                const titleKey = mod.columns[0];
+                const statusKey = mod.columns.find((key) => ['status', 'stage', 'payment_status'].includes(key));
+                const bodyKey = mod.columns.find((key) => key !== titleKey && key !== statusKey);
+                const cardTitle = String(valueFor(item, titleKey) ?? (zh ? '未命名记录' : 'Untitled record'));
+                const cardBody = bodyKey ? String(valueFor(item, bodyKey) ?? '') : '';
+                const purpose = zh ? `打开${heading}记录：${cardTitle}` : `Open ${mod.en} record: ${cardTitle}`;
+                return <Link key={item.id} href={`/${entity}/${item.id}`} className="mobile-record-card" role="listitem" aria-label={purpose} data-testid={`mobile-card-${entity}-${item.id}`}>
+                  <div className="mobile-record-card-content">
+                    <div className="mobile-record-card-eyebrow">{displayLabel(titleKey, lang)}</div>
+                    <div className="mobile-record-card-heading">{cardTitle}</div>
+                    {cardBody && <div className="mobile-record-card-body">{displayLabel(bodyKey!, lang)}: {cardBody}</div>}
+                    {statusKey && <div className="mobile-record-card-status"><StatusPill value={String(item.data[statusKey] ?? '—')} lang={lang} /></div>}
+                  </div>
+                  <ChevronRight className="mobile-record-card-chevron" size={20} aria-hidden="true" />
+                </Link>;
+              })}
             </div>
             <div className="pagination"><span>{zh ? `第 ${list.data.page} 页，共 ${list.data.total} 条记录` : `Page ${list.data.page} · ${list.data.total} records`}</span><div className="page-actions"><Button kind="tertiary" size="sm" disabled={page <= 1} onClick={() => setPage(page - 1)} data-testid="button-previous-page">{zh ? '上一页' : 'Previous'}</Button><Button kind="tertiary" size="sm" disabled={page * list.data.page_size >= list.data.total} onClick={() => setPage(page + 1)} data-testid="button-next-page">{zh ? '下一页' : 'Next'}</Button></div></div></>}
       </section>
