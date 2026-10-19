@@ -1,4 +1,4 @@
-# Trigger a fresh Pages build after updating the CRM's public Supabase client config.
+# Cloudflare Pages runtime configuration for the CRM.
 name = "cosmos-cortex"
 compatibility_date = "2026-10-19"
 pages_build_output_dir = "./artifacts/cosmos-cortex-crm/dist/public"
@@ -6,3 +6,5 @@ pages_build_output_dir = "./artifacts/cosmos-cortex-crm/dist/public"
 [vars]
 SUPABASE_URL = "https://texdpbvtqbnfjdstqinh.supabase.co"
 VITE_SUPABASE_URL = "https://texdpbvtqbnfjdstqinh.supabase.co"
+SUPABASE_ANON_KEY = "sb_publishable_f7pxYLPujC_QfbGW_tPp-w_7nggFVmV"
+VITE_SUPABASE_ANON_KEY = "sb_publishable_f7pxYLPujC_QfbGW_tPp-w_7nggFVmV"
