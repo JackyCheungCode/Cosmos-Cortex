@@ -2,14 +2,13 @@ import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from 're
 import { QueryClient, QueryClientProvider, useQueryClient } from '@tanstack/react-query';
 import {
   Button, Checkbox, DatePicker, DatePickerInput, Dropdown, InlineLoading, InlineNotification,
-  Modal, PasswordInput, Search, SkeletonText, TextArea, TextInput,
+  Modal, PasswordInput, Search, SkeletonText, Tag, TextArea, TextInput, Tile,
 } from '@carbon/react';
 import {
   Add, ArrowLeft, Building, ChartRelationship, Currency, Dashboard as DashboardIcon,
   Delivery as DeliveryIcon, Edit, Menu, Purchase, RequestQuote, Search as SearchIcon,
   Logout, Notification, TrashCan, UserAvatar, UserFollow, UserMultiple, ChevronRight,
 } from '@carbon/icons-react';
-import { Tag } from '@carbon/react';
 import {
   getGetDashboardQueryKey, getGetCrmRecordQueryKey, getListCrmRecordsQueryKey,
   useCreateCrmRecord, useDeleteCrmRecord, useGetCrmRecord, useGetDashboard,
@@ -188,7 +187,7 @@ function AppShell({ children, lang, setLang, onSignOut }: { children: ReactNode;
   };
   return <div className="app-shell">
     {navOpen && <button className="sidebar-scrim" aria-label={label('关闭侧边栏', 'Close navigation')} onClick={() => setNavOpen(false)} />}
-    <aside className={`side-nav ${navOpen ? 'open' : ''}`} data-testid="navigation-sidebar" aria-hidden={!navOpen}>
+    <aside className={`side-nav ${navOpen ? 'open' : ''}`} data-testid="navigation-sidebar" aria-hidden={navOpen ? false : undefined}>
       <nav className="nav-links nav-primary">
         <Link href="/" onClick={() => setNavOpen(false)} className={`nav-link ${path === '/' ? 'active' : ''}`} data-testid="link-dashboard"><DashboardIcon />{label('总览', 'Overview')}</Link>
       </nav>
@@ -243,6 +242,7 @@ function Dashboard({ lang }: { lang: Lang }) {
   const zh = lang === 'zh';
   const items = data?.monthly_revenue ?? [];
   const maxRevenue = Math.max(1, ...items.map((item) => item.amount));
+  const kpiIcons = [UserFollow, ChartRelationship, ChartRelationship, Currency, RequestQuote, Purchase];
   const kpis: [string, string, string][] = [
     [zh ? '潜在客户' : 'Leads', String(data?.lead_count ?? '—'), zh ? `已合格 ${data?.qualified_lead_count ?? '—'}` : `${data?.qualified_lead_count ?? '—'} qualified`],
     [zh ? '开放销售机会' : 'Open opportunities', String(data?.open_opportunity_count ?? '—'), `${zh ? '销售管道' : 'Pipeline'} · ${formatAmount(data?.pipeline_value, 'CNY', lang)}`],
@@ -254,7 +254,7 @@ function Dashboard({ lang }: { lang: Lang }) {
   return <div data-testid="page-dashboard">
     <div className="page-heading"><div><div className="eyebrow">{zh ? '收入运营 · 工作台' : 'REVENUE OPERATIONS · WORKSPACE'}</div><h1>{zh ? '业务总览' : 'Business overview'}</h1><p>{zh ? '从销售线索到回款，一处掌握业务进展。' : 'One view of progress from first lead to final payment.'}</p></div><div className="page-actions"><Button kind="tertiary" size="sm" renderIcon={SearchIcon} onClick={() => setLocation('/leads')} data-testid="button-open-leads">{zh ? '查看潜在客户' : 'View leads'}</Button></div></div>
     {isLoading ? <div className="dashboard-grid">{Array.from({ length: 6 }, (_, i) => <div className="kpi-card" key={i}><SkeletonText width="50%" /><SkeletonText heading width="65%" /></div>)}</div> : isError ? <div><InlineNotification kind="error" title={zh ? '总览暂时无法加载' : 'Dashboard unavailable'} subtitle={zh ? '请检查连接后重试。' : 'Check your connection and retry.'} /><Button kind="ghost" size="sm" onClick={() => refetch()} data-testid="button-retry-dashboard">{zh ? '重试' : 'Retry'}</Button></div> : <>
-      <div className="dashboard-grid">{kpis.map(([label, value, note], i) => <article className="kpi-card" key={label} data-testid={`kpi-card-${i}`}><div className="kpi-label">{label}</div><div className="kpi-value" data-testid={`kpi-value-${i}`}>{value}</div><div className="kpi-note">{note}</div></article>)}</div>
+      <div className="dashboard-grid">{kpis.map(([label, value, note], i) => { const MetricIcon = kpiIcons[i]; return <Tile className="kpi-card" key={label} data-testid={`kpi-card-${i}`}><div className="kpi-topline"><div className="kpi-label">{label}</div><span className="kpi-icon"><MetricIcon size={20} aria-hidden="true" /></span></div><div className="kpi-value" data-testid={`kpi-value-${i}`}>{value}</div><div className="kpi-note">{note}</div></Tile>; })}</div>
       <div className="dashboard-lower">
         <section className="section-panel"><div className="section-head"><h2>{zh ? '月度收入' : 'Monthly revenue'}</h2><span>{zh ? '按月份汇总' : 'By month'}</span></div>
           {items.length ? <div className="chart" data-testid="chart-monthly-revenue">{items.map((item, index) => <div className="chart-col" key={`${item.month}-${index}`} title={`${item.month}: ${formatAmount(item.amount, 'CNY', lang)}`} data-testid={`chart-month-${index}`}><div className="bar-track"><div className="bar-fill" style={{ height: `${Math.max(2, (item.amount / maxRevenue) * 100)}%` }} /></div><div className="bar-label">{item.month}</div></div>)}</div> : <EmptyState zh={zh} title={zh ? '暂无收入记录' : 'No revenue data'} detail={zh ? '收入数据将在产生回款后显示。' : 'Revenue will appear when payments are recorded.'} />}
@@ -277,7 +277,8 @@ function EmptyState({ zh, title, detail, action }: { zh: boolean; title: string;
 function StatusPill({ value, lang }: { value: string; lang: Lang }) {
   const lowered = value.toLowerCase();
   const tone = /won|paid|delivered|已收款|已送达|成交|已接受|已完成/.test(lowered) ? 'good' : /overdue|failed|lost|异常|失败|逾期|拒绝/.test(lowered) ? 'bad' : /pending|draft|新建|待|草稿|联系中/.test(lowered) ? 'warn' : '';
-  return <span className={`status-pill ${tone}`} data-testid={`status-${value.replaceAll(' ', '-')}`}>{displayEnumValue(value, lang)}</span>;
+  const tagType = tone === 'good' ? 'green' : tone === 'bad' ? 'red' : tone === 'warn' ? 'warm-gray' : 'gray';
+  return <Tag className={`status-tag ${tone}`} type={tagType} data-testid={`status-${value.replaceAll(' ', '-')}`}>{displayEnumValue(value, lang)}</Tag>;
 }
 
 function ResourcePage({ entity, lang }: { entity: CrmEntity; lang: Lang }) {
