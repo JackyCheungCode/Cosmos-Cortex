@@ -1228,3 +1228,85 @@ a.record-link, .content a:not(.nav-link) { color: #0f62fe; }
 }
 @media (max-width: 360px) { .sales-kpi-card { padding: 10px; } .sales-kpi-card .kpi-value { font-size: 17px; letter-spacing: -.5px; } .kpi-icon { width: 25px; height: 25px; flex-basis: 25px; } .filter-segment { padding: 0 8px; font-size: 11px; } .quota-metrics { grid-template-columns: 1fr; } .quota-metrics > div + div { border-left: 0; border-top: 1px solid #e0e0e0; } }
 @media (prefers-reduced-motion: reduce) { .sales-dashboard *, .sales-dashboard *::before, .sales-dashboard *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; } }
+
+
+/* Lead workspace — Carbon-inspired List Report / Object Page */
+.app-shell .lead-total-tag { margin-left: 12px; vertical-align: middle; }
+.app-shell .lead-summary-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 16px; margin: 0 0 16px; }
+.app-shell .lead-summary-tile { appearance: none; display: flex; min-width: 0; min-height: 104px; flex-direction: column; align-items: flex-start; justify-content: center; gap: 5px; padding: 16px; border: 1px solid #e0e0e0; border-radius: 0; background: #fff; color: #161616; text-align: left; cursor: pointer; transition: background-color .15s ease, border-color .15s ease; }
+.app-shell .lead-summary-tile:hover { background: #f4f4f4; }
+.app-shell .lead-summary-tile.active { border-bottom: 3px solid #0f62fe; background: #edf5ff; }
+.app-shell .lead-summary-tile > span { color: #525252; font-size: 12px; }
+.app-shell .lead-summary-tile > strong { font-size: 26px; font-weight: 400; line-height: 1.2; font-variant-numeric: tabular-nums; }
+.app-shell .lead-summary-tile > small { color: #6f6f6f; font-size: 11px; }
+.app-shell .lead-toolbar { align-items: center; flex-wrap: wrap; }
+.app-shell .toolbar-count { margin-left: auto; color: #525252; font-size: 12px; white-space: nowrap; }
+.app-shell .lead-view-switch { display: inline-flex; align-items: center; border: 1px solid #8d8d8d; }
+.app-shell .lead-view-switch button { min-height: 32px; padding: 0 12px; border: 0; border-right: 1px solid #c6c6c6; background: #fff; color: #393939; font: inherit; font-size: 12px; cursor: pointer; }
+.app-shell .lead-view-switch button:last-child { border-right: 0; }
+.app-shell .lead-view-switch button:hover { background: #e8e8e8; }
+.app-shell .lead-view-switch button.active { background: #393939; color: #fff; }
+.app-shell .lead-view-hidden { display: none !important; }
+.app-shell .lead-kanban { display: grid; grid-template-columns: repeat(4, minmax(210px, 1fr)); gap: 12px; padding: 16px; overflow-x: auto; background: #f4f4f4; }
+.app-shell .lead-kanban-column { min-width: 210px; padding: 8px; background: #e8e8e8; }
+.app-shell .lead-kanban-column > header { display: flex; justify-content: space-between; align-items: center; gap: 8px; min-height: 36px; margin-bottom: 8px; }
+.app-shell .lead-kanban-column > header strong { font-size: 13px; font-weight: 600; }
+.app-shell .lead-kanban-card { display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px; padding: 12px; border: 1px solid #d1d1d1; background: #fff; color: #161616; text-decoration: none; }
+.app-shell .lead-kanban-card:hover { border-color: #0f62fe; }
+.app-shell .lead-kanban-card > strong { font-size: 14px; font-weight: 600; }
+.app-shell .lead-kanban-card > span, .app-shell .lead-kanban-card > small { color: #525252; font-size: 12px; overflow-wrap: anywhere; }
+.app-shell .lead-kanban-card > div { display: flex; flex-wrap: wrap; gap: 6px; }
+.app-shell .lead-kanban-empty { padding: 24px 8px; color: #6f6f6f; font-size: 12px; text-align: center; }
+.app-shell .lead-card-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; padding: 16px; }
+.app-shell .lead-object-card { display: flex; min-width: 0; flex-direction: column; gap: 10px; padding: 16px; border: 1px solid #e0e0e0; background: #fff; color: #161616; text-decoration: none; }
+.app-shell .lead-object-card:hover { border-color: #0f62fe; background: #f8fbff; }
+.app-shell .lead-object-card-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.app-shell .lead-avatar { display: inline-flex; width: 36px; height: 36px; align-items: center; justify-content: center; background: #e8daff; color: #491d8b; font-size: 16px; font-weight: 600; }
+.app-shell .lead-object-card h3 { margin: 0; font-size: 16px; font-weight: 600; overflow-wrap: anywhere; }
+.app-shell .lead-object-card p { margin: 0; color: #525252; font-size: 13px; }
+.app-shell .lead-object-card-details, .app-shell .lead-object-card-footer { display: flex; align-items: center; justify-content: space-between; gap: 8px; color: #525252; font-size: 12px; }
+.app-shell .lead-object-card-footer { margin-top: auto; padding-top: 12px; border-top: 1px solid #e0e0e0; color: #0f62fe; }
+.app-shell .lead-path-panel, .app-shell .lead-activity-panel { margin-bottom: 16px; padding: 20px; border: 1px solid #e0e0e0; background: #fff; }
+.app-shell .lead-path-heading { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.app-shell .lead-path-heading h2, .app-shell .lead-activity-panel h2 { margin: 0 0 6px; font-size: 16px; font-weight: 600; }
+.app-shell .lead-path-heading p, .app-shell .lead-activity-panel .section-head p { margin: 0; color: #525252; font-size: 12px; }
+.app-shell .lead-path-steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin: 20px 0 12px; }
+.app-shell .lead-path-step { display: flex; min-width: 0; align-items: center; gap: 8px; padding: 10px 8px; border: 1px solid #c6c6c6; background: #f4f4f4; color: #525252; text-align: left; cursor: pointer; }
+.app-shell .lead-path-step > span { display: inline-flex; width: 22px; height: 22px; flex: 0 0 22px; align-items: center; justify-content: center; border: 1px solid #8d8d8d; border-radius: 50%; font-size: 11px; }
+.app-shell .lead-path-step > strong { font-size: 12px; font-weight: 500; overflow-wrap: anywhere; }
+.app-shell .lead-path-step.complete { border-color: #a7f0ba; background: #defbe6; color: #044317; }
+.app-shell .lead-path-step.complete > span { border-color: #24a148; background: #24a148; color: #fff; }
+.app-shell .lead-path-step.current { outline: 2px solid #0f62fe; outline-offset: -2px; }
+.app-shell .lead-guidance { padding: 12px; border-left: 3px solid #0f62fe; background: #edf5ff; color: #393939; font-size: 12px; line-height: 1.5; }
+.app-shell .lead-next-action-date { margin: 12px 0 4px; font-size: 18px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.app-shell .lead-score-card { margin-top: 20px; padding-top: 16px; border-top: 1px solid #e0e0e0; }
+.app-shell .lead-score-card > strong { display: block; margin-bottom: 8px; font-size: 13px; }
+.app-shell .lead-activity-panel .section-head { margin-bottom: 18px; }
+.app-shell .lead-activity-entry { display: flex; gap: 12px; padding: 14px 0 18px; }
+.app-shell .lead-activity-dot { width: 10px; height: 10px; flex: 0 0 10px; margin-top: 5px; border-radius: 50%; background: #0f62fe; box-shadow: 0 0 0 4px #edf5ff; }
+.app-shell .lead-activity-entry strong { font-size: 13px; }
+.app-shell .lead-activity-entry p { margin: 6px 0; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 13px; line-height: 1.6; }
+.app-shell .lead-activity-entry small, .app-shell .lead-activity-empty { color: #6f6f6f; font-size: 12px; }
+.app-shell .lead-activity-empty { padding: 18px 0; }
+@media (max-width: 1311px) {
+  .app-shell .lead-summary-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .app-shell .lead-card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 760px) {
+  .app-shell .lead-summary-grid { display: flex; gap: 8px; margin: 0 -8px 12px; padding: 0 8px 6px; overflow-x: auto; scroll-snap-type: x mandatory; }
+  .app-shell .lead-summary-tile { min-width: 136px; min-height: 92px; padding: 12px; scroll-snap-align: start; }
+  .app-shell .lead-summary-tile > strong { font-size: 22px; }
+  .app-shell .lead-toolbar { align-items: stretch; }
+  .app-shell .toolbar-count { margin-left: 0; }
+  .app-shell .lead-view-switch { width: 100%; }
+  .app-shell .lead-view-switch button { flex: 1; }
+  .app-shell .lead-kanban { display: flex; gap: 10px; padding: 10px; }
+  .app-shell .lead-kanban-column { min-width: min(78vw, 290px); }
+  .app-shell .lead-card-grid { grid-template-columns: 1fr; padding: 12px; }
+  .app-shell .lead-path-panel, .app-shell .lead-activity-panel { padding: 14px; }
+  .app-shell .lead-path-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .app-shell .lead-path-step { align-items: flex-start; flex-direction: column; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .app-shell .lead-summary-tile, .app-shell .lead-kanban-card, .app-shell .lead-object-card { transition: none !important; }
+}
