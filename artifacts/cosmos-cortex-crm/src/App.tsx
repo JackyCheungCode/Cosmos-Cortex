@@ -259,6 +259,16 @@ function ResourcePage({ entity, lang }: { entity: CrmEntity; lang: Lang }) {
   const queryClient = useQueryClient();
   const listParams = useMemo(() => ({ entity, q: search || undefined, status: status || undefined, page, page_size: 20 }), [entity, search, status, page]);
   const list = useListCrmRecords(listParams);
+  useEffect(() => {
+    if (list.isError) {
+      // Keep the original API failure visible for diagnosis; never log auth tokens.
+      console.error('[Cosmos CRM] Failed to load CRM records', {
+        entity,
+        error: list.error,
+        message: list.error instanceof Error ? list.error.message : String(list.error ?? 'Unknown error'),
+      });
+    }
+  }, [entity, list.isError, list.error]);
   const detail = useGetCrmRecord(entity, id ?? '', { query: { enabled: !!id, queryKey: getGetCrmRecordQueryKey(entity, id ?? '') } });
   const accountsLookup = useListCrmRecords({ entity: 'accounts', page_size: 100 }, { query: { queryKey: getListCrmRecordsQueryKey({ entity: 'accounts', page_size: 100 }), enabled: mod.fields.some((field) => field.reference === 'accounts') } });
   const contactsLookup = useListCrmRecords({ entity: 'contacts', page_size: 100 }, { query: { queryKey: getListCrmRecordsQueryKey({ entity: 'contacts', page_size: 100 }), enabled: mod.fields.some((field) => field.reference === 'contacts') } });
@@ -353,7 +363,7 @@ function ResourcePage({ entity, lang }: { entity: CrmEntity; lang: Lang }) {
           <span style={{ marginLeft: 'auto', color: '#62727d', fontSize: 11 }} data-testid={`text-record-count-${entity}`}>{list.data ? `${list.data.total} ${zh ? '条记录' : 'records'}` : ''}</span>
         </div>
         {list.isLoading ? <div style={{ padding: 14 }} data-testid="state-loading">{Array.from({ length: 8 }, (_, i) => <div className="skeleton-row" key={i} />)}</div> :
-          list.isError ? <div className="error-state" data-testid="state-error"><InlineNotification kind="error" title={zh ? '记录加载失败' : 'Could not load records'} subtitle={zh ? '请重试，或稍后再试。' : 'Retry now or try again later.'} /><Button kind="ghost" size="sm" onClick={() => list.refetch()} data-testid="button-retry-list">{zh ? '重试' : 'Retry'}</Button></div> :
+          list.isError ? <div className="error-state" data-testid="state-error"><InlineNotification kind="error" title={zh ? '记录加载失败' : 'Could not load records'} subtitle={`${zh ? '原始错误：' : 'Raw error: '}${list.error instanceof Error ? list.error.message : String(list.error ?? 'Unknown error')}`} /><Button kind="ghost" size="sm" onClick={() => list.refetch()} data-testid="button-retry-list">{zh ? '重试' : 'Retry'}</Button></div> :
           !list.data?.items.length ? <EmptyState zh={zh} title={zh ? '还没有记录' : 'No records yet'} detail={search || status ? (zh ? '请调整搜索条件或筛选状态。' : 'Try changing your search or status filter.') : (zh ? `创建第一条${heading}记录，开始追踪业务进展。` : `Create your first ${mod.en.toLowerCase()} record to get started.`)} action={!search && !status ? <Button kind="tertiary" size="sm" renderIcon={Add} onClick={beginCreate} data-testid={`button-empty-create-${entity}`}>{zh ? '创建记录' : 'Create record'}</Button> : undefined} /> :
           <>
             <div className="table-wrap">
