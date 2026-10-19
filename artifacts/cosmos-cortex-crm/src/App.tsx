@@ -467,10 +467,9 @@ function LoginPage({ lang, setLang, onSignIn }: { lang: Lang; setLang: (lang: La
           <path d="M32.2 13.5c2.1-5.2 9.5-5.8 13.2-1.7 3.1 3.4 2.8 7.1 1.2 9.7 5.1.8 8.2 5.2 7.1 10.2-.5 2.2-1.8 4-3.7 5.1 3.1 3.2 2.8 8.4-.8 11.2-2 1.6-4.5 2.1-6.9 1.5-1.4 4.6-6.4 7-10.2 4.6V13.5Z" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round"/>
           <path d="M22 19c4 1 5 4 4 7m-11 5c5-1 8 2 8 6m-2 10c3-2 6-1 8 2m13-30c-4 1-5 4-4 7m11 5c-5-1-8 2-8 6m2 10c-3-2-6-1-8 2M32 14v39" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round"/>
         </svg></div>
-        <div className="login-brand-name">Cosmos <strong>Cortex</strong></div>
       </div>
       <div className="login-content">
-        <h1>{zh ? '登录到 Cosmos Cortex' : 'Sign in to Cosmos Cortex'}</h1>
+        <h1>{zh ? <>登录到 Cosmos <strong>Cortex</strong></> : <>Sign in to Cosmos <strong>Cortex</strong></>}</h1>
         <p className="login-slogan">Think Like the Universe.</p>
         <div className="login-form">
           {step === 'identifier' ? <form onSubmit={resolveAccount}>
