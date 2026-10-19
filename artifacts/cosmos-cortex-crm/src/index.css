@@ -375,3 +375,63 @@ button, input, textarea, select { font: inherit; }
   .side-nav { width: min(280px, 84vw); }
   .content { padding: 20px 14px 32px; }
 }
+
+
+/* IBM Carbon theme alignment */
+:root {
+  --cds-interactive: #0f62fe;
+  --cds-interactive-01: #0f62fe;
+  --cds-focus: #0f62fe;
+  --cds-link-primary: #0f62fe;
+  --cds-button-primary: #0f62fe;
+  --cds-button-primary-hover: #0353e9;
+  --cds-button-primary-active: #002d9c;
+  --cds-border-interactive: #0f62fe;
+  --cds-support-info: #0043ce;
+  --accent: #0f62fe;
+}
+.cds--btn--primary { background: #0f62fe; }
+.cds--btn--primary:hover { background: #0353e9; }
+.cds--btn--primary:active { background: #002d9c; }
+.cds--text-input:focus, .cds--text-area:focus, .cds--search-input:focus,
+.cds--list-box:focus, .cds--date-picker input:focus { outline-color: #0f62fe; }
+.topbar .header-menu-button.cds--btn,
+.topbar .header-action.cds--btn,
+.topbar .header-avatar.cds--btn { color: #fff !important; }
+.topbar .header-menu-button .cds--btn__icon,
+.topbar .header-action .cds--btn__icon,
+.topbar .header-avatar .cds--btn__icon { fill: #fff !important; }
+.header-brand.cds--btn {
+  min-height: 32px; height: 32px; max-width: none; width: auto; padding: 0;
+  color: #fff !important; font: 400 16px/1 'IBM Plex Sans', sans-serif;
+  letter-spacing: -.2px; background: transparent; border: 0;
+}
+.header-brand.cds--btn:hover { color: #fff !important; background: #393939; }
+.header-brand strong { font-weight: 700; }
+
+/* White navigation rail with black Carbon icons and labels */
+.side-nav {
+  background: #fff;
+  color: #161616;
+  border-right: 1px solid #e0e0e0;
+  box-shadow: 8px 0 24px #00000014;
+}
+.side-nav .nav-section { color: #525252; }
+.side-nav .nav-link { color: #161616; }
+.side-nav .nav-link svg { fill: currentColor; color: #161616; }
+.side-nav .nav-link:hover { background: #f4f4f4; color: #161616; }
+.side-nav .nav-link.active {
+  background: #e8f1ff;
+  border-left-color: #0f62fe;
+  color: #161616;
+}
+.side-nav .nav-link.active svg { color: #161616; }
+.side-nav .nav-primary { border-bottom-color: #e0e0e0; }
+
+/* Carbon controls consistently use IBM's primary blue for focus and selection */
+.cds--checkbox:checked + .cds--checkbox-label::before,
+.cds--radio-button:checked + .cds--radio-button__label .cds--radio-button__appearance {
+  border-color: #0f62fe;
+}
+.cds--list-box__menu-item--active .cds--list-box__menu-item__option,
+.cds--list-box__menu-item--highlighted { background: #e8f1ff; }
