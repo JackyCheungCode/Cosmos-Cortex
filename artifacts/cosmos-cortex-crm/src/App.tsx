@@ -78,7 +78,7 @@ const paymentStatuses = options(
 const activeStatuses = options(['active', '启用', 'Active'], ['inactive', '停用', 'Inactive']);
 
 const modules: ModuleDef[] = [
-  { entity: 'leads', label: '潜在客户', en: 'Leads', icon: UserFollow, fields: [
+  { entity: 'leads', label: '线索', en: 'Leads', icon: UserFollow, fields: [
     { key: 'name', required: true }, { key: 'company' }, { key: 'title' }, { key: 'email', kind: 'email' }, { key: 'phone', kind: 'tel' },
     { key: 'source', kind: 'select', options: options(['website', '网站', 'Website'], ['event', '展会', 'Event'], ['referral', '推荐', 'Referral'], ['phone', '电话', 'Phone'], ['other', '其他', 'Other']) },
     { key: 'status', kind: 'select', options: leadStatuses },
@@ -210,8 +210,8 @@ function AppShell({ children, lang, setLang, onSignOut }: { children: ReactNode;
           <div className="header-popover-anchor">
             <Button className="header-action" kind="ghost" size="sm" hasIconOnly renderIcon={SearchIcon} iconDescription={label('打开搜索', 'Open search')} onClick={() => { setSearchOpen((open) => !open); setNotificationOpen(false); setProfileOpen(false); }} data-testid="button-header-search" />
             {searchOpen && <form className="header-popover header-search-popover" role="search" onSubmit={submitGlobalSearch}>
-              <Search size="lg" labelText={label('全局搜索', 'Global search')} placeholder={label('搜索潜在客户...', 'Search leads...')} value={globalSearch} onChange={(event) => setGlobalSearch(event.currentTarget.value)} data-testid="input-global-search" />
-              <div className="header-popover-hint">{label('按 Enter 搜索潜在客户', 'Press Enter to search leads')}</div>
+              <Search size="lg" labelText={label('全局搜索', 'Global search')} placeholder={label('搜索线索...', 'Search leads...')} value={globalSearch} onChange={(event) => setGlobalSearch(event.currentTarget.value)} data-testid="input-global-search" />
+              <div className="header-popover-hint">{label('按 Enter 搜索线索', 'Press Enter to search leads')}</div>
             </form>}
           </div>
           <div className="header-popover-anchor">
@@ -264,12 +264,12 @@ function Dashboard({ lang }: { lang: Lang }) {
     { id: 'winrate', label: zh ? '赢单率' : 'Win rate', value: '—', note: zh ? '需要赢单/丢单历史数据' : 'Won/lost history unavailable', icon: ChartRelationship, route: '/opportunities' },
     { id: 'deal', label: zh ? '平均成交金额' : 'Average deal size', value: '—', note: zh ? '汇总接口暂未提供' : 'Not provided by summary API', icon: RequestQuote, route: '/quotes' },
     { id: 'cycle', label: zh ? '平均成交周期' : 'Sales cycle', value: '—', note: zh ? '汇总接口暂未提供' : 'Not provided by summary API', icon: Purchase, route: '/opportunities' },
-    { id: 'leads', label: zh ? '潜在客户' : 'Leads', value: data ? String(leads) : '—', note: (zh ? '已合格 ' : 'Qualified ') + qualified, icon: UserFollow, route: '/leads' },
+    { id: 'leads', label: zh ? '线索' : 'Leads', value: data ? String(leads) : '—', note: (zh ? '已合格 ' : 'Qualified ') + qualified, icon: UserFollow, route: '/leads' },
   ];
   const insights = [
     { title: (zh ? '开放销售机会：' : 'Open opportunities: ') + openOpps, detail: zh ? '检查阶段、预计成交日期与下一步行动。' : 'Review stage, expected close date, and next steps.', route: '/opportunities', action: zh ? '查看商机' : 'Review deals', tone: 'info' },
     { title: (zh ? '未结余额：' : 'Outstanding balance: ') + formatAmount(outstanding, 'CNY', lang), detail: zh ? '核对关联订单与收款记录，确认是否需要跟进。' : 'Review related orders and payment records.', route: '/payments', action: zh ? '查看收款' : 'Review payments', tone: outstanding > 0 ? 'warning' : 'success' },
-    { title: (zh ? '潜在客户：' : 'Leads: ') + leads + (zh ? '，已合格 ' : ', qualified ') + qualified, detail: zh ? '持续跟进未合格线索并补全来源信息。' : 'Follow up unqualified leads and complete source details.', route: '/leads', action: zh ? '跟进线索' : 'Follow up', tone: 'info' },
+    { title: (zh ? '线索：' : 'Leads: ') + leads + (zh ? '，已合格 ' : ', qualified ') + qualified, detail: zh ? '持续跟进未合格线索并补全来源信息。' : 'Follow up unqualified leads and complete source details.', route: '/leads', action: zh ? '跟进线索' : 'Follow up', tone: 'info' },
   ];
   const addTask = () => { const title = taskText.trim(); if (!title) return; setTasks((current) => [{ id: Date.now(), title, done: false }, ...current]); setTaskText(''); };
   return <div className="sales-dashboard" data-testid="page-dashboard">
@@ -360,6 +360,7 @@ function ResourcePage({ entity, lang }: { entity: CrmEntity; lang: Lang }) {
   const queryClient = useQueryClient();
   const listParams = useMemo(() => ({ entity, q: search || undefined, status: status || undefined, page, page_size: 20 }), [entity, search, status, page]);
   const list = useListCrmRecords(listParams);
+  const leadAllCount = useListCrmRecords({ entity: 'leads', page: 1, page_size: 1 }, { query: { enabled: entity === 'leads' } });
   const leadNewCount = useListCrmRecords({ entity: 'leads', status: 'new', page: 1, page_size: 1 }, { query: { enabled: entity === 'leads' } });
   const leadContactedCount = useListCrmRecords({ entity: 'leads', status: 'contacted', page: 1, page_size: 1 }, { query: { enabled: entity === 'leads' } });
   const leadQualifiedCount = useListCrmRecords({ entity: 'leads', status: 'qualified', page: 1, page_size: 1 }, { query: { enabled: entity === 'leads' } });
@@ -399,7 +400,7 @@ function ResourcePage({ entity, lang }: { entity: CrmEntity; lang: Lang }) {
       recordId ? queryClient.invalidateQueries({ queryKey: getGetCrmRecordQueryKey(entity, recordId) }) : Promise.resolve(),
     ]);
   };
-  const beginCreate = () => { setSelected(null); setFormValues({}); setModal('create'); };
+  const beginCreate = () => { setSelected(null); setFormValues(entity === 'leads' ? { status: 'new' } : {}); setModal('create'); };
   const beginEdit = (record: CrmRecord) => {
     const initialValues = { ...record.data };
     for (const field of mod.fields) {
@@ -447,7 +448,7 @@ function ResourcePage({ entity, lang }: { entity: CrmEntity; lang: Lang }) {
   const record = id ? detail.data : null;
   const heading = zh ? mod.label : mod.en;
   const leadSummary = [
-    { id: '', title: zh ? '全部线索' : 'All leads', count: list.data?.total ?? 0 },
+    { id: '', title: zh ? '全部线索' : 'All leads', count: leadAllCount.data?.total ?? 0 },
     { id: 'new', title: zh ? '新线索' : 'New', count: leadNewCount.data?.total ?? 0 },
     { id: 'contacted', title: zh ? '跟进中' : 'Contacting', count: leadContactedCount.data?.total ?? 0 },
     { id: 'qualified', title: zh ? '已合格' : 'Qualified', count: leadQualifiedCount.data?.total ?? 0 },
