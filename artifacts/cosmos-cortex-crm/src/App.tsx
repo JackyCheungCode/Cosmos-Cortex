@@ -433,12 +433,21 @@ function LoginPage({ lang, setLang, onSignIn }: { lang: Lang; setLang: (lang: La
   const [pending, setPending] = useState(false);
   const [error, setError] = useState('');
   const resolveAccount = async (event: FormEvent) => {
-    event.preventDefault(); setError(''); setPending(true);
+    event.preventDefault(); setError('');
+    const value = identifier.trim();
+    if (mode === 'email') {
+      // Let Supabase Auth verify the email/password pair. Do not require an
+      // admin-only account lookup before a normal email sign-in.
+      setResolvedEmail(value);
+      setStep('password');
+      return;
+    }
+    setPending(true);
     try {
-      const response = await fetch('/api/auth/resolve-account', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ identifier: identifier.trim(), mode }) });
+      const response = await fetch('/api/auth/resolve-account', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ identifier: value, mode }) });
       const result = await response.json() as { exists?: boolean };
       if (!response.ok || !result.exists) throw new Error('Account not found');
-      setResolvedEmail(mode === 'email' ? identifier.trim() : '');
+      setResolvedEmail('');
       setStep('password');
     } catch { setError(zh ? '无法验证此账户。请检查输入，或稍后重试。' : 'We could not verify this account. Check the entry or try again later.'); }
     finally { setPending(false); }
