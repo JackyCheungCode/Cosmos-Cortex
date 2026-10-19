@@ -3,4 +3,5 @@ compatibility_date = "2026-10-19"
 pages_build_output_dir = "./artifacts/cosmos-cortex-crm/dist/public"
 
 [vars]
-VITE_SUPABASE_URL ="https://texdpbvtqbnfjdstqinh.supabase.co"
+SUPABASE_URL = "https://texdpbvtqbnfjdstqinh.supabase.co"
+VITE_SUPABASE_URL = "https://texdpbvtqbnfjdstqinh.supabase.co"
