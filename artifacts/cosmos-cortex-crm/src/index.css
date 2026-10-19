@@ -584,10 +584,7 @@ a.record-link, .content a:not(.nav-link) { color: #0f62fe; }
 }
 
 /* Strict flat geometry: no rounded corners or decorative shadows anywhere. */
-*, *::before, *::after {
-  border-radius: 0 !important;
-  box-shadow: none !important;
-}
+/* Flat geometry is scoped to the authenticated CRM shell below; sign-in remains untouched. */
 body { background: #fff; color: #161616; font-family: 'IBM Plex Sans', sans-serif; }
 .app-shell, .main-area, .content { background: #fff; color: #161616; }
 .topbar { background: #161616; color: #f4f4f4; }
@@ -752,4 +749,597 @@ body { background: #fff; color: #161616; font-family: 'IBM Plex Sans', sans-seri
   }
   [data-testid="page-quotes"] .desktop-record-table { display: none; }
   [data-testid="page-quotes"] .mobile-record-card { width: 100%; }
+}
+
+
+/* --------------------------------------------------------------------------
+   Authenticated CRM workspace — IBM Cloud / Carbon Design System v11
+   Login selectors are intentionally excluded from this layer.
+   -------------------------------------------------------------------------- */
+.app-shell {
+  --cds-interactive: #0f62fe;
+  --cds-focus: #0f62fe;
+  --cds-link-primary: #0f62fe;
+  --cds-button-primary: #0f62fe;
+  --cds-button-primary-hover: #0353e9;
+  --cds-button-primary-active: #002d9c;
+  --cds-border-subtle-00: #e0e0e0;
+  --cds-border-subtle-01: #e0e0e0;
+  --cds-layer-01: #ffffff;
+  --cds-layer-02: #f4f4f4;
+  --cds-text-primary: #161616;
+  --cds-text-secondary: #525252;
+  min-height: 100dvh;
+  background: #f4f4f4;
+  color: #161616;
+  font-family: 'IBM Plex Sans', sans-serif;
+}
+.app-shell *, .app-shell *::before, .app-shell *::after {
+  box-sizing: border-box;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+.app-shell .main-area {
+  min-width: 0;
+  width: calc(100% - 256px);
+  margin-left: 256px;
+  background: #f4f4f4;
+}
+.app-shell .topbar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: flex;
+  height: 48px;
+  min-height: 48px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px 0 16px;
+  background: #161616;
+  color: #f4f4f4;
+  border: 0;
+  border-bottom: 1px solid #393939;
+}
+.app-shell .topbar-left, .app-shell .topbar-right {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  min-width: 0;
+}
+.app-shell .topbar-left { gap: 12px; }
+.app-shell .topbar-right { gap: 4px; }
+.app-shell .header-brand {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  color: #f4f4f4;
+  font: 400 16px/1 'IBM Plex Sans', sans-serif;
+  letter-spacing: -.15px;
+  white-space: nowrap;
+  cursor: default;
+}
+.app-shell .header-brand strong { font-weight: 600; }
+.app-shell .header-menu-button.cds--btn,
+.app-shell .header-action.cds--btn,
+.app-shell .header-avatar.cds--btn {
+  display: inline-flex;
+  width: 44px;
+  max-width: 44px;
+  height: 48px;
+  min-height: 48px;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  color: #f4f4f4 !important;
+  background: transparent;
+  border: 0;
+}
+.app-shell .header-menu-button .cds--btn__icon,
+.app-shell .header-action .cds--btn__icon,
+.app-shell .header-avatar .cds--btn__icon { fill: #f4f4f4 !important; }
+.app-shell .header-menu-button.cds--btn:hover,
+.app-shell .header-action.cds--btn:hover,
+.app-shell .header-avatar.cds--btn:hover { background: #393939; }
+.app-shell .header-popover {
+  background: #262626;
+  color: #f4f4f4;
+  border: 1px solid #525252;
+}
+.app-shell .header-popover-hint { color: #c6c6c6; }
+.app-shell .header-popover-title { border-bottom-color: #525252; }
+.app-shell .header-notification-empty { color: #c6c6c6; }
+
+/* Persistent IBM Cloud-style navigation rail on desktop. */
+.app-shell .side-nav {
+  position: fixed;
+  z-index: 35;
+  inset: 48px auto 0 0;
+  display: flex;
+  width: 256px;
+  padding: 16px 0 24px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  flex-direction: column;
+  background: #262626;
+  color: #f4f4f4;
+  border-right: 1px solid #393939;
+  transform: none;
+  transition: transform .18s ease;
+}
+.app-shell .side-nav .nav-primary {
+  padding: 0 0 12px;
+  border-bottom: 1px solid #393939;
+}
+.app-shell .side-nav .nav-section {
+  padding: 24px 16px 8px;
+  color: #a8a8a8;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.app-shell .side-nav .nav-links { gap: 0; padding: 0; }
+.app-shell .side-nav .nav-link {
+  display: flex;
+  min-height: 40px;
+  align-items: center;
+  gap: 14px;
+  padding: 0 16px;
+  color: #f4f4f4;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+  border-left: 3px solid transparent;
+  text-decoration: none;
+}
+.app-shell .side-nav .nav-link svg {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+  fill: currentColor;
+  color: currentColor;
+}
+.app-shell .side-nav .nav-link:hover { background: #353535; color: #ffffff; }
+.app-shell .side-nav .nav-link.active {
+  background: #353535;
+  color: #ffffff;
+  border-left-color: #0f62fe;
+  font-weight: 600;
+}
+.app-shell .sidebar-scrim { display: none; }
+.app-shell .header-menu-button { display: none; }
+
+/* IBM's 2x grid / 8px rhythm, with a calm gray canvas and white layers. */
+.app-shell .content {
+  width: 100%;
+  max-width: 1760px;
+  min-width: 0;
+  margin: 0 auto;
+  padding: 32px 32px 48px;
+  background: #f4f4f4;
+  color: #161616;
+}
+.app-shell [data-testid^="page-"] { min-width: 0; }
+.app-shell .page-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  margin: 0 0 28px;
+}
+.app-shell .page-heading > div:first-child { min-width: 0; }
+.app-shell .page-heading .eyebrow {
+  margin: 0 0 8px;
+  color: #525252;
+  font: 400 12px/16px 'IBM Plex Sans', sans-serif;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.app-shell .page-heading h1 {
+  margin: 0;
+  color: #161616;
+  font: 400 28px/36px 'IBM Plex Sans', sans-serif;
+  letter-spacing: 0;
+  overflow-wrap: anywhere;
+}
+.app-shell .page-heading p {
+  margin: 8px 0 0;
+  color: #525252;
+  font: 400 14px/20px 'IBM Plex Sans', sans-serif;
+  max-width: 720px;
+}
+.app-shell .page-actions { display: flex; align-items: center; gap: 8px; }
+.app-shell .cds--btn { font-family: 'IBM Plex Sans', sans-serif; }
+.app-shell .cds--btn--primary,
+.app-shell .cds--btn--primary:focus {
+  background: #0f62fe;
+  color: #ffffff;
+}
+.app-shell .cds--btn--primary:hover { background: #0353e9; }
+.app-shell .cds--btn--primary:active { background: #002d9c; }
+.app-shell .cds--btn:focus,
+.app-shell .cds--text-input:focus,
+.app-shell .cds--text-area:focus,
+.app-shell .cds--search-input:focus,
+.app-shell .cds--list-box:focus,
+.app-shell .cds--date-picker input:focus {
+  outline-color: #0f62fe;
+}
+
+/* KPI cards are Carbon Tile components, not custom card divs. */
+.app-shell .dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin: 0 0 24px;
+}
+.app-shell .kpi-card.cds--tile {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 152px;
+  padding: 20px 20px 18px;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  color: #161616;
+  position: relative;
+}
+.app-shell .kpi-card.cds--tile::before { content: none; }
+.app-shell .kpi-topline {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.app-shell .kpi-label {
+  color: #525252;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+}
+.app-shell .kpi-icon {
+  display: inline-flex;
+  flex: 0 0 36px;
+  width: 36px;
+  height: 36px;
+  align-items: center;
+  justify-content: center;
+  background: #edf5ff;
+  color: #0f62fe;
+}
+.app-shell .kpi-icon svg { fill: currentColor; }
+.app-shell .kpi-value {
+  margin-top: auto;
+  padding-top: 16px;
+  color: #161616;
+  font: 400 clamp(24px, 2.2vw, 32px)/1.2 'IBM Plex Sans', sans-serif;
+  letter-spacing: -.5px;
+  overflow-wrap: anywhere;
+  font-variant-numeric: tabular-nums;
+}
+.app-shell .kpi-note {
+  margin-top: 6px;
+  color: #6f6f6f;
+  font-size: 12px;
+  line-height: 16px;
+  overflow-wrap: anywhere;
+}
+.app-shell .dashboard-lower {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(300px, 1fr);
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.app-shell .section-panel {
+  min-width: 0;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+}
+.app-shell .section-head {
+  display: flex;
+  min-height: 56px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e0e0e0;
+}
+.app-shell .section-head h2 {
+  margin: 0;
+  color: #161616;
+  font: 600 16px/24px 'IBM Plex Sans', sans-serif;
+}
+.app-shell .section-head span {
+  color: #6f6f6f;
+  font-size: 12px;
+  line-height: 16px;
+  text-align: right;
+}
+.app-shell .chart {
+  display: flex;
+  min-height: 240px;
+  height: 240px;
+  align-items: flex-end;
+  gap: 16px;
+  padding: 24px 24px 20px;
+  background: #ffffff;
+  border-bottom: 1px solid #e0e0e0;
+}
+.app-shell .chart-col { min-width: 0; gap: 8px; }
+.app-shell .bar-track {
+  display: flex;
+  width: min(40px, 76%);
+  height: 164px;
+  align-items: flex-end;
+  background: #e8e8e8;
+}
+.app-shell .bar-fill { width: 100%; min-height: 2px; background: #0f62fe; }
+.app-shell .bar-label { color: #6f6f6f; font-size: 12px; line-height: 16px; }
+.app-shell .stage-list { padding: 12px 20px 16px; }
+.app-shell .stage-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid #e8e8e8;
+  font-size: 14px;
+  line-height: 20px;
+}
+.app-shell .stage-row:last-child { border-bottom: 0; }
+.app-shell .stage-name { color: #525252; min-width: 0; overflow-wrap: anywhere; }
+.app-shell .stage-meta {
+  color: #161616;
+  font: 400 12px/20px 'IBM Plex Sans', sans-serif;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.app-shell .section-panel[style] { margin-top: 16px !important; }
+
+/* Carbon table rhythm, contrasts, status Tags and comfortable row actions. */
+.app-shell .panel {
+  min-width: 0;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+}
+.app-shell .toolbar {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  flex-wrap: wrap;
+  min-height: 76px;
+  padding: 16px;
+  background: #ffffff;
+  border-bottom: 1px solid #e0e0e0;
+}
+.app-shell .toolbar .cds--search { width: min(440px, 100%); flex: 1 1 280px; }
+.app-shell .toolbar .cds--list-box__wrapper { width: 240px; flex: 0 1 240px; }
+.app-shell .toolbar .cds--search-input,
+.app-shell .toolbar .cds--list-box,
+.app-shell .toolbar .cds--dropdown {
+  background: #f4f4f4;
+  color: #161616;
+  border: 0;
+  border-bottom: 1px solid #8d8d8d;
+}
+.app-shell .toolbar .cds--search-input::placeholder { color: #8d8d8d; opacity: 1; }
+.app-shell .toolbar .cds--search-input:focus { border-bottom: 2px solid #0f62fe; outline: none; }
+.app-shell .toolbar .cds--list-box:focus,
+.app-shell .toolbar .cds--dropdown:focus { outline: 2px solid #0f62fe; outline-offset: -2px; }
+.app-shell .toolbar [data-testid^="text-record-count"] {
+  flex: 0 0 auto;
+  align-self: center;
+  margin-left: auto !important;
+  color: #525252 !important;
+  font-size: 12px !important;
+  line-height: 16px;
+}
+.app-shell .table-wrap { min-width: 0; overflow: auto; background: #ffffff; }
+.app-shell .data-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font: 400 14px/20px 'IBM Plex Sans', sans-serif;
+}
+.app-shell .data-table th {
+  padding: 12px 16px;
+  background: #f4f4f4;
+  color: #525252;
+  border-bottom: 1px solid #c6c6c6;
+  white-space: nowrap;
+  font: 600 12px/16px 'IBM Plex Sans', sans-serif;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.app-shell .data-table td {
+  padding: 14px 16px;
+  color: #393939;
+  border-bottom: 1px solid #e0e0e0;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+.app-shell .data-table tbody tr { background: #ffffff; }
+.app-shell .data-table tbody tr:hover { background: #f4f4f4; }
+.app-shell .record-link {
+  color: #0f62fe;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.app-shell .record-link:hover { text-decoration: underline; }
+.app-shell .row-actions { display: flex; align-items: center; gap: 4px; }
+.app-shell .status-tag.cds--tag {
+  display: inline-flex;
+  max-width: 100%;
+  min-height: 24px;
+  align-items: center;
+  margin: 0;
+  padding: 4px 8px;
+  font: 400 12px/16px 'IBM Plex Sans', sans-serif;
+  white-space: nowrap;
+}
+.app-shell .status-tag.good.cds--tag { background: #e5f6e9; color: #0e6027; }
+.app-shell .status-tag.warn.cds--tag { background: #fff1c7; color: #8a3800; }
+.app-shell .status-tag.bad.cds--tag { background: #fff1f1; color: #a2191f; }
+.app-shell .pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 16px;
+  background: #ffffff;
+  border-top: 1px solid #e0e0e0;
+  color: #525252;
+  font-size: 12px;
+  line-height: 16px;
+}
+.app-shell .pagination .page-actions { gap: 8px; }
+
+/* Record list uses native Carbon Tile surfaces; it remains a single Link target. */
+.app-shell .mobile-card-list { display: none; }
+.app-shell .mobile-record-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-width: 0;
+  min-height: 88px;
+  width: 100%;
+  padding: 16px;
+  border: 1px solid #e0e0e0;
+  background: #ffffff;
+  color: #161616;
+  text-decoration: none;
+}
+.app-shell .mobile-record-card:hover { background: #f4f4f4; color: #161616; }
+.app-shell .mobile-record-card:focus-visible { outline: 2px solid #0f62fe; outline-offset: -2px; }
+.app-shell .mobile-record-card-content { flex: 1 1 auto; min-width: 0; }
+.app-shell .mobile-record-card-eyebrow {
+  margin: 0 0 4px;
+  color: #525252;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 400;
+}
+.app-shell .mobile-record-card-heading {
+  color: #161616;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.app-shell .mobile-record-card-body {
+  margin-top: 4px;
+  color: #525252;
+  font-size: 14px;
+  line-height: 20px;
+  overflow-wrap: anywhere;
+}
+.app-shell .mobile-record-card-status { margin-top: 8px; }
+.app-shell .mobile-record-card-chevron { flex: 0 0 16px; width: 16px; height: 16px; color: #161616; }
+
+/* Record detail and empty/loading states follow Carbon layers and type scales. */
+.app-shell .detail-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 296px;
+  gap: 16px;
+}
+.app-shell .detail-card { background: #ffffff; border: 1px solid #e0e0e0; min-width: 0; }
+.app-shell .detail-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  background: #ffffff;
+  border-bottom: 1px solid #e0e0e0;
+}
+.app-shell .detail-card-header h2 { margin: 0; font-size: 16px; line-height: 24px; font-weight: 600; }
+.app-shell .detail-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.app-shell .detail-field { min-width: 0; padding: 16px 20px; border-bottom: 1px solid #e0e0e0; }
+.app-shell .detail-field:nth-child(odd) { border-right: 1px solid #e0e0e0; }
+.app-shell .detail-label { color: #525252; font-size: 12px; line-height: 16px; letter-spacing: 0; text-transform: none; margin-bottom: 8px; }
+.app-shell .detail-value { color: #161616; font-size: 14px; line-height: 20px; overflow-wrap: anywhere; }
+.app-shell .metadata { background: #ffffff; border: 1px solid #e0e0e0; padding: 20px; color: #525252; font-size: 12px; line-height: 20px; }
+.app-shell .metadata strong { color: #161616; font-size: 14px; font-weight: 600; margin-bottom: 12px; }
+.app-shell .empty-state, .app-shell .error-state { padding: 56px 24px; color: #525252; }
+.app-shell .empty-mark { background: #edf5ff; color: #0f62fe; }
+.app-shell .empty-state h3 { color: #161616; font-size: 16px; font-weight: 600; line-height: 24px; }
+.app-shell .empty-state p { color: #525252; font-size: 14px; line-height: 20px; }
+.app-shell .skeleton-row { background: linear-gradient(90deg, #e8e8e8 25%, #f4f4f4 45%, #e8e8e8 65%); }
+
+/* Carbon v11's mobile grid changes, without affecting the sign-in screen. */
+@media (max-width: 1100px) {
+  .app-shell .content { padding: 28px 24px 40px; }
+  .app-shell .dashboard-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .app-shell .dashboard-lower { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 760px) {
+  .app-shell .main-area { width: 100%; margin-left: 0; }
+  .app-shell .topbar { padding: 0 8px; }
+  .app-shell .topbar-left { gap: 4px; }
+  .app-shell .header-menu-button.cds--btn {
+    display: inline-flex;
+    width: 42px;
+    max-width: 42px;
+    margin-right: 0;
+  }
+  .app-shell .header-action.cds--btn { width: 40px; max-width: 40px; }
+  .app-shell .header-avatar.cds--btn { width: 40px; max-width: 40px; }
+  .app-shell .header-brand { font-size: 15px; }
+  .app-shell .side-nav {
+    width: min(280px, 86vw);
+    transform: translateX(-102%);
+    visibility: hidden;
+    box-shadow: none !important;
+  }
+  .app-shell .side-nav.open { transform: translateX(0); visibility: visible; }
+  .app-shell .sidebar-scrim {
+    display: block;
+    position: fixed;
+    z-index: 34;
+    inset: 48px 0 0;
+    width: 100%;
+    height: auto;
+    padding: 0;
+    border: 0;
+    background: #00000066;
+  }
+  .app-shell .content { padding: 24px 16px 32px; }
+  .app-shell .page-heading { flex-direction: column; gap: 16px; margin-bottom: 24px; }
+  .app-shell .page-heading h1 { font-size: 28px; line-height: 36px; }
+  .app-shell .page-actions { width: 100%; }
+  .app-shell .page-actions .cds--btn { max-width: none; }
+  .app-shell [data-testid^="page-"]:not([data-testid="page-dashboard"]) > .page-heading .page-actions .cds--btn { flex: 1 1 auto; }
+  .app-shell .dashboard-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-bottom: 16px; }
+  .app-shell .kpi-card.cds--tile { min-height: 138px; padding: 16px; }
+  .app-shell .kpi-icon { width: 32px; height: 32px; flex-basis: 32px; }
+  .app-shell .kpi-icon svg { width: 18px; height: 18px; }
+  .app-shell .kpi-value { font-size: clamp(20px, 5.6vw, 28px); padding-top: 12px; }
+  .app-shell .kpi-note { font-size: 11px; line-height: 16px; }
+  .app-shell .toolbar { display: flex; flex-direction: column; align-items: stretch; gap: 12px; padding: 16px; }
+  .app-shell .toolbar .cds--search,
+  .app-shell .toolbar .cds--list-box__wrapper,
+  .app-shell .toolbar .cds--dropdown { width: 100%; min-width: 0; max-width: none; }
+  .app-shell .toolbar [data-testid^="text-record-count"] { margin-left: 0 !important; align-self: flex-start; }
+  .app-shell .panel { border: 0; background: transparent; }
+  .app-shell .mobile-card-list { display: flex; flex-direction: column; gap: 12px; }
+  .app-shell .desktop-record-table { display: none; }
+  .app-shell .mobile-record-card { min-height: 88px; padding: 16px; }
+  .app-shell .dashboard-lower { gap: 16px; }
+  .app-shell .section-panel[style] { margin-top: 16px !important; }
+  .app-shell .detail-layout { grid-template-columns: minmax(0, 1fr); }
+  .app-shell .metadata { overflow-wrap: anywhere; }
+  .app-shell .pagination { align-items: flex-start; flex-direction: column; gap: 12px; }
+  .app-shell .pagination .page-actions { width: 100%; }
+  .app-shell .pagination .page-actions .cds--btn { flex: 1 1 auto; }
+}
+@media (max-width: 420px) {
+  .app-shell .content { padding: 20px 12px 28px; }
+  .app-shell .dashboard-grid { grid-template-columns: minmax(0, 1fr); }
+  .app-shell .kpi-card.cds--tile { min-height: 124px; }
+  .app-shell .detail-grid { grid-template-columns: minmax(0, 1fr); }
+  .app-shell .detail-field:nth-child(odd) { border-right: 0; }
+  .app-shell .chart { gap: 8px; padding: 20px 12px 16px; }
+  .app-shell .stage-list { padding: 8px 16px 12px; }
 }
