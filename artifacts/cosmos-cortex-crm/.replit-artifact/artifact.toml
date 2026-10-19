@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Cosmos CRM"
+description = "A single-user enterprise CRM for managing leads, accounts, contacts, sales opportunities, dashboards, quotes, orders, deliveries, and payments. Built with IBM Carbon, backed by Supabase, and prepared for Cloudflare Pages with a future AI extension point."
+version = "1.0.0"
+id = "artifacts/cosmos-cortex-crm"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 26229
+
+[services.development]
+run = "pnpm --filter @workspace/cosmos-cortex-crm run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/cosmos-cortex-crm", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/cosmos-cortex-crm/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "26229"
+BASE_PATH = "/"
