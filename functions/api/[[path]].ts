@@ -1,6 +1,7 @@
 interface Env {
   SUPABASE_URL?: string;
   SUPABASE_ANON_KEY?: string;
+  SUPABASE_SERVICE_ROLE_KEY?: string;
 }
 
 interface PagesContext {
@@ -123,6 +124,57 @@ async function callSupabase(
     throw json(payload ?? { error: "Supabase request failed." }, response.status);
   }
   return { payload, response };
+}
+
+
+async function routeAuth(request: Request, env: Env, url: URL): Promise<Response | null> {
+  const path = url.pathname.replace(/\/+$/, "");
+  if (path !== "/api/auth/resolve-account" && path !== "/api/auth/sign-in-username") return null;
+  if (request.method !== "POST") return json({ error: "Method not allowed." }, 405);
+  const baseUrl = env.SUPABASE_URL?.replace(/\/+$/, "");
+  const anonKey = env.SUPABASE_ANON_KEY;
+  const serviceKey = env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!baseUrl || !anonKey || !serviceKey) return json({ error: "Account sign-in is not configured." }, 503);
+  let body: { identifier?: unknown; mode?: unknown; username?: unknown; password?: unknown };
+  try { body = await request.json() as typeof body; } catch { return json({ error: "Invalid request." }, 400); }
+  if (path === "/api/auth/resolve-account") {
+    const identifier = typeof body.identifier === "string" ? body.identifier.trim() : "";
+    const mode = body.mode;
+    if (!identifier || identifier.length > 254 || (mode !== "email" && mode !== "username")) return json({ error: "Invalid account identifier." }, 400);
+    let exists = false;
+    if (mode === "username") {
+      const lookup = new URL(baseUrl + "/rest/v1/crm_login_accounts");
+      lookup.search = new URLSearchParams({ select: "username", username: "eq." + identifier, limit: "1" }).toString();
+      const response = await fetch(lookup, { headers: { apikey: serviceKey, authorization: "Bearer " + serviceKey, accept: "application/json" } });
+      if (!response.ok) return json({ error: "Account verification is temporarily unavailable." }, 503);
+      const rows = await response.json() as unknown[];
+      exists = Array.isArray(rows) && rows.length > 0;
+    } else {
+      const response = await fetch(baseUrl + "/auth/v1/admin/users?page=1&per_page=1000", { headers: { apikey: serviceKey, authorization: "Bearer " + serviceKey, accept: "application/json" } });
+      if (!response.ok) return json({ error: "Account verification is temporarily unavailable." }, 503);
+      const payload = await response.json() as { users?: Array<{ email?: string | null; deleted_at?: string | null }> };
+      exists = (payload.users ?? []).some((user) => !user.deleted_at && user.email?.toLowerCase() === identifier.toLowerCase());
+    }
+    return json({ exists });
+  }
+  const username = typeof body.username === "string" ? body.username.trim() : "";
+  const password = typeof body.password === "string" ? body.password : "";
+  if (!username || username.length > 128 || !password || password.length > 1024) return json({ error: "Invalid credentials." }, 400);
+  const lookup = new URL(baseUrl + "/rest/v1/crm_login_accounts");
+  lookup.search = new URLSearchParams({ select: "email", username: "eq." + username, limit: "1" }).toString();
+  const mappingResponse = await fetch(lookup, { headers: { apikey: serviceKey, authorization: "Bearer " + serviceKey, accept: "application/json" } });
+  if (!mappingResponse.ok) return json({ error: "Sign-in failed." }, 401);
+  const mappings = await mappingResponse.json() as Array<{ email?: string }>;
+  const email = Array.isArray(mappings) && mappings.length === 1 ? mappings[0]?.email : undefined;
+  if (!email) return json({ error: "Sign-in failed." }, 401);
+  const authResponse = await fetch(baseUrl + "/auth/v1/token?grant_type=password", {
+    method: "POST",
+    headers: { apikey: anonKey, "content-type": "application/json", accept: "application/json" },
+    body: JSON.stringify({ email, password }),
+  });
+  const authPayload = await authResponse.json().catch(() => null) as Record<string, unknown> | null;
+  if (!authResponse.ok || !authPayload?.access_token || !authPayload?.refresh_token) return json({ error: "Sign-in failed." }, 401);
+  return json({ access_token: authPayload.access_token, refresh_token: authPayload.refresh_token });
 }
 
 async function routeCrm(
@@ -286,7 +338,14 @@ export async function onRequest(context: PagesContext): Promise<Response> {
   }
 
   try {
-    const response = await routeCrm(request, env, new URL(request.url));
+    const url = new URL(request.url);
+    const authResponse = await routeAuth(request, env, url);
+    if (authResponse) {
+      const headers = new Headers(authResponse.headers);
+      headers.set("access-control-allow-origin", "*");
+      return new Response(authResponse.body, { status: authResponse.status, statusText: authResponse.statusText, headers });
+    }
+    const response = await routeCrm(request, env, url);
     const headers = new Headers(response.headers);
     headers.set("access-control-allow-origin", "*");
     return new Response(response.body, {
