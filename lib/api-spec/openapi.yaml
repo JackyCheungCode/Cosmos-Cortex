@@ -3,14 +3,140 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: Cosmos CRM API
 servers:
   - url: /api
     description: Base API path
 tags:
+  - name: crm
+    description: Single-user CRM records and dashboard
   - name: health
     description: Health operations
 paths:
+  /dashboard:
+    get:
+      operationId: getDashboard
+      tags: [crm]
+      summary: Get CRM dashboard summary
+      responses:
+        "200":
+          description: Dashboard metrics and recent activity
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardSummary"
+  /crm:
+    get:
+      operationId: listCrmRecords
+      tags: [crm]
+      summary: List records in a CRM module
+      parameters:
+        - name: entity
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/CrmEntity"
+        - name: q
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: page_size
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 50
+      responses:
+        "200":
+          description: Matching CRM records
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CrmRecordList"
+    post:
+      operationId: createCrmRecord
+      tags: [crm]
+      summary: Create a CRM record
+      parameters:
+        - name: entity
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/CrmEntity"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CrmRecordInput"
+      responses:
+        "201":
+          description: Created CRM record
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CrmRecord"
+  /crm/{entity}/{id}:
+    parameters:
+      - name: entity
+        in: path
+        required: true
+        schema:
+          $ref: "#/components/schemas/CrmEntity"
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      operationId: getCrmRecord
+      tags: [crm]
+      summary: Get one CRM record
+      responses:
+        "200":
+          description: CRM record
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CrmRecord"
+        "404":
+          description: Record not found
+    patch:
+      operationId: updateCrmRecord
+      tags: [crm]
+      summary: Update a CRM record
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CrmRecordUpdate"
+      responses:
+        "200":
+          description: Updated CRM record
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CrmRecord"
+    delete:
+      operationId: deleteCrmRecord
+      tags: [crm]
+      summary: Delete a CRM record
+      responses:
+        "204":
+          description: Record deleted
   /healthz:
     get:
       operationId: healthCheck
@@ -25,7 +151,136 @@ paths:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
 components:
+  securitySchemes:
+    SupabaseBearer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
+    CrmEntity:
+      type: string
+      enum:
+        - leads
+        - accounts
+        - contacts
+        - opportunities
+        - quotes
+        - orders
+        - deliveries
+        - payments
+    CrmRecord:
+      type: object
+      required: [id, entity, data, created_at, updated_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        entity:
+          $ref: "#/components/schemas/CrmEntity"
+        data:
+          type: object
+          additionalProperties: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    CrmRecordList:
+      type: object
+      required: [items, total, page, page_size]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/CrmRecord"
+        total:
+          type: integer
+        page:
+          type: integer
+        page_size:
+          type: integer
+    CrmRecordInput:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: object
+          additionalProperties: true
+    CrmRecordUpdate:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: object
+          additionalProperties: true
+    MonthlyRevenue:
+      type: object
+      required: [month, amount]
+      properties:
+        month:
+          type: string
+        amount:
+          type: number
+    StageSummary:
+      type: object
+      required: [stage, count, amount]
+      properties:
+        stage:
+          type: string
+        count:
+          type: integer
+        amount:
+          type: number
+    DashboardSummary:
+      type: object
+      required:
+        - lead_count
+        - qualified_lead_count
+        - open_opportunity_count
+        - pipeline_value
+        - weighted_pipeline_value
+        - won_revenue
+        - quote_count
+        - open_order_count
+        - orders_to_ship
+        - outstanding_balance
+        - monthly_revenue
+        - opportunities_by_stage
+        - recent_records
+      properties:
+        lead_count:
+          type: integer
+        qualified_lead_count:
+          type: integer
+        open_opportunity_count:
+          type: integer
+        pipeline_value:
+          type: number
+        weighted_pipeline_value:
+          type: number
+        won_revenue:
+          type: number
+        quote_count:
+          type: integer
+        open_order_count:
+          type: integer
+        orders_to_ship:
+          type: integer
+        outstanding_balance:
+          type: number
+        monthly_revenue:
+          type: array
+          items:
+            $ref: "#/components/schemas/MonthlyRevenue"
+        opportunities_by_stage:
+          type: array
+          items:
+            $ref: "#/components/schemas/StageSummary"
+        recent_records:
+          type: array
+          items:
+            $ref: "#/components/schemas/CrmRecord"
     HealthStatus:
       type: object
       properties:
@@ -33,4 +288,6 @@ components:
           type: string
       required:
         - status
+security:
+  - SupabaseBearer: []
 
