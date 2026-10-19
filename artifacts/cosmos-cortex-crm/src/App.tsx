@@ -174,9 +174,17 @@ function AppShell({ children, lang, setLang, onSignOut }: { children: ReactNode;
   const [path, setLocation] = useLocation();
   const [navOpen, setNavOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [notificationOpen, setNotificationOpen] = useState(false);
+  const [globalSearch, setGlobalSearch] = useState('');
   const label = (zh: string, en: string) => lang === 'zh' ? zh : en;
   const currentModule = modules.find((m) => path.startsWith(`/${m.entity}`));
-  const go = (href: string) => { setLocation(href); setNavOpen(false); setProfileOpen(false); };
+  const go = (href: string) => { setLocation(href); setNavOpen(false); setProfileOpen(false); setSearchOpen(false); setNotificationOpen(false); };
+  const submitGlobalSearch = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setSearchOpen(false);
+    if (globalSearch.trim()) setLocation(`/leads?search=${encodeURIComponent(globalSearch.trim())}`);
+  };
   return <div className="app-shell">
     {navOpen && <button className="sidebar-scrim" aria-label={label('关闭侧边栏', 'Close navigation')} onClick={() => setNavOpen(false)} />}
     <aside className={`side-nav ${navOpen ? 'open' : ''}`} data-testid="navigation-sidebar" aria-hidden={!navOpen}>
@@ -196,13 +204,25 @@ function AppShell({ children, lang, setLang, onSignOut }: { children: ReactNode;
       <header className="topbar" data-testid="app-header">
         <div className="topbar-left">
           <Button className="header-menu-button" kind="ghost" size="sm" hasIconOnly renderIcon={Menu} iconDescription={label('展开或隐藏侧边栏', 'Toggle navigation')} onClick={() => setNavOpen((open) => !open)} data-testid="button-mobile-menu" />
-          <Button className="header-brand" kind="ghost" size="sm" onClick={() => go('/')} aria-label="cosmos Cortex home">cosmos <strong>Cortex</strong></Button>
+          <div className="header-brand" aria-label="cosmos Cortex">cosmos <strong>Cortex</strong></div>
         </div>
         <div className="topbar-right">
-          <Button className="header-action" kind="ghost" size="sm" hasIconOnly renderIcon={SearchIcon} iconDescription={label('搜索潜在客户', 'Search leads')} onClick={() => go('/leads')} data-testid="button-header-search" />
-          <Button className="header-action" kind="ghost" size="sm" hasIconOnly renderIcon={Notification} iconDescription={label('消息与联系人', 'Messages and contacts')} onClick={() => go('/contacts')} data-testid="button-header-messages" />
+          <div className="header-popover-anchor">
+            <Button className="header-action" kind="ghost" size="sm" hasIconOnly renderIcon={SearchIcon} iconDescription={label('打开搜索', 'Open search')} onClick={() => { setSearchOpen((open) => !open); setNotificationOpen(false); setProfileOpen(false); }} data-testid="button-header-search" />
+            {searchOpen && <form className="header-popover header-search-popover" role="search" onSubmit={submitGlobalSearch}>
+              <Search size="lg" labelText={label('全局搜索', 'Global search')} placeholder={label('搜索潜在客户...', 'Search leads...')} value={globalSearch} onChange={(event) => setGlobalSearch(event.currentTarget.value)} data-testid="input-global-search" />
+              <div className="header-popover-hint">{label('按 Enter 搜索潜在客户', 'Press Enter to search leads')}</div>
+            </form>}
+          </div>
+          <div className="header-popover-anchor">
+            <Button className="header-action" kind="ghost" size="sm" hasIconOnly renderIcon={Notification} iconDescription={label('查看通知', 'View notifications')} onClick={() => { setNotificationOpen((open) => !open); setSearchOpen(false); setProfileOpen(false); }} data-testid="button-header-messages" />
+            {notificationOpen && <div className="header-popover notification-popover" role="status">
+              <div className="header-popover-title">{label('通知', 'Notifications')}</div>
+              <div className="header-notification-empty">{label('目前没有新通知', 'You’re all caught up')}</div>
+            </div>}
+          </div>
           <div className="profile-control">
-            <Button className="header-avatar" kind="ghost" size="sm" hasIconOnly renderIcon={UserAvatar} iconDescription={label('用户菜单', 'User menu')} onClick={() => setProfileOpen((open) => !open)} data-testid="button-user-avatar" />
+            <Button className="header-avatar" kind="ghost" size="sm" hasIconOnly renderIcon={UserAvatar} iconDescription={label('用户菜单', 'User menu')} onClick={() => { setProfileOpen((open) => !open); setSearchOpen(false); setNotificationOpen(false); }} data-testid="button-user-avatar" />
             {profileOpen && <div className="profile-menu" role="menu">
               <div className="profile-menu-label">{label('已登录用户', 'Signed-in user')}</div>
               <Button kind="ghost" size="sm" className="profile-menu-item" onClick={() => { setLang(lang === 'zh' ? 'en' : 'zh'); setProfileOpen(false); }}>{lang === 'zh' ? 'Switch to English' : '切换到简体中文'}</Button>
