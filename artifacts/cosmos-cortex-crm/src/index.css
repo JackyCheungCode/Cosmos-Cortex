@@ -1416,3 +1416,5 @@ a.record-link, .content a:not(.nav-link) { color: #0f62fe; }
  .contacts-form-grid { grid-template-columns:1fr; }
 }
 @media (max-width: 360px) { .contacts-summary-card { padding:9px; } .contacts-summary-card span { font-size:11px; } .contacts-profile-actions { flex-direction:column; align-items:stretch; } }
+
+.app-shell .contacts-detail-page > .cds--inline-notification { margin-bottom: 16px; }
