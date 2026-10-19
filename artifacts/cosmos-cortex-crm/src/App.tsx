@@ -196,7 +196,7 @@ function AppShell({ children, lang, setLang, onSignOut }: { children: ReactNode;
       <header className="topbar" data-testid="app-header">
         <div className="topbar-left">
           <Button className="header-menu-button" kind="ghost" size="sm" hasIconOnly renderIcon={Menu} iconDescription={label('展开或隐藏侧边栏', 'Toggle navigation')} onClick={() => setNavOpen((open) => !open)} data-testid="button-mobile-menu" />
-          <button className="header-brand" onClick={() => go('/')} aria-label="cosmos Cortex home">cosmos <strong>Cortex</strong></button>
+          <Button className="header-brand" kind="ghost" size="sm" onClick={() => go('/')} aria-label="cosmos Cortex home">cosmos <strong>Cortex</strong></Button>
         </div>
         <div className="topbar-right">
           <Button className="header-action" kind="ghost" size="sm" hasIconOnly renderIcon={SearchIcon} iconDescription={label('搜索潜在客户', 'Search leads')} onClick={() => go('/leads')} data-testid="button-header-search" />
