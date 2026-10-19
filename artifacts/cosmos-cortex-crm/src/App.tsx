@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from 'react';
 import { QueryClient, QueryClientProvider, useQueryClient } from '@tanstack/react-query';
 import {
-  Button, Checkbox, InlineLoading, InlineNotification, Modal, PasswordInput,
+  Button, Checkbox, Dropdown, InlineLoading, InlineNotification, Modal, PasswordInput,
   Search, Select, SelectItem, SkeletonText, TextArea, TextInput,
 } from '@carbon/react';
 import {
@@ -425,7 +425,6 @@ function ResourcePage({ entity, lang }: { entity: CrmEntity; lang: Lang }) {
 function LoginPage({ lang, setLang, onSignIn }: { lang: Lang; setLang: (lang: Lang) => void; onSignIn?: (credentials: { email: string; password: string }) => void | Promise<void> }) {
   const zh = lang === 'zh';
   const [mode, setMode] = useState<'email' | 'username'>('email');
-  const [menuOpen, setMenuOpen] = useState(false);
   const [identifier, setIdentifier] = useState('');
   const [resolvedEmail, setResolvedEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -482,23 +481,52 @@ function LoginPage({ lang, setLang, onSignIn }: { lang: Lang; setLang: (lang: La
         <p className="login-slogan">Think Like the Universe.</p>
         <div className="login-form">
           {step === 'identifier' ? <form onSubmit={resolveAccount}>
-            <div className="login-mode-wrap">
-              <button className="login-mode-trigger" type="button" aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}><span>{mode === 'email' ? (zh ? '邮件地址登录' : 'Sign in with email') : (zh ? '管理员分配的账户登录' : 'Sign in with assigned account')}</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m3 6 5 5 5-5" fill="none" stroke="currentColor" strokeWidth="1.5"/></svg></button>
-              {menuOpen && <div className="login-mode-menu" role="listbox" aria-label={zh ? '登录方式' : 'Sign-in method'}>
-                <button type="button" role="option" aria-selected={mode === 'email'} onClick={() => { setMode('email'); setMenuOpen(false); setIdentifier(''); setError(''); }}>{zh ? '邮件地址登录' : 'Sign in with email'}</button>
-                <button type="button" role="option" aria-selected={mode === 'username'} onClick={() => { setMode('username'); setMenuOpen(false); setIdentifier(''); setError(''); }}>{zh ? '管理员分配的账户登录' : 'Sign in with assigned account'}</button>
-              </div>}
-            </div>
-            <label className="login-label" htmlFor="login-identifier">{mode === 'email' ? (zh ? '电子邮箱' : 'Email address') : (zh ? '管理员分配的账户名' : 'Assigned account name')}</label>
-            <input id="login-identifier" className="login-input" type={mode === 'email' ? 'email' : 'text'} autoComplete="username" value={identifier} onChange={(event) => setIdentifier(event.currentTarget.value)} required autoFocus />
+            <Dropdown
+              id="login-mode"
+              titleText={zh ? '登录方式' : 'Sign-in method'}
+              label={mode === 'email' ? (zh ? '邮件地址登录' : 'Sign in with email') : (zh ? '管理员分配的账户登录' : 'Sign in with assigned account')}
+              items={[
+                { id: 'email' as const, label: zh ? '邮件地址登录' : 'Sign in with email' },
+                { id: 'username' as const, label: zh ? '管理员分配的账户登录' : 'Sign in with assigned account' },
+              ]}
+              itemToString={(item) => item?.label ?? ''}
+              selectedItem={{ id: mode, label: mode === 'email' ? (zh ? '邮件地址登录' : 'Sign in with email') : (zh ? '管理员分配的账户登录' : 'Sign in with assigned account') }}
+              onChange={({ selectedItem }) => {
+                if (!selectedItem) return;
+                setMode(selectedItem.id);
+                setIdentifier('');
+                setError('');
+              }}
+            />
+            <TextInput
+              id="login-identifier"
+              labelText={mode === 'email' ? (zh ? '电子邮箱' : 'Email address') : (zh ? '管理员分配的账户名' : 'Assigned account name')}
+              type={mode === 'email' ? 'email' : 'text'}
+              autoComplete="username"
+              value={identifier}
+              onChange={(event) => setIdentifier(event.currentTarget.value)}
+              required
+              autoFocus
+            />
             {error && <div className="login-error" role="alert">{error}</div>}
-            {pending ? <div className="login-pending">{zh ? '正在检查账户…' : 'Checking account…'}</div> : <button className="login-submit" type="submit">{zh ? '继续' : 'Continue'} <span aria-hidden="true">→</span></button>}
+            {pending
+              ? <InlineLoading description={zh ? '正在检查账户…' : 'Checking account…'} />
+              : <Button kind="primary" type="submit">{zh ? '继续' : 'Continue'}</Button>}
           </form> : <form onSubmit={submitPassword}>
-            <div className="login-identity-summary"><div className="login-summary-label">{mode === 'email' ? (zh ? '电子邮箱' : 'Email address') : (zh ? '账户名' : 'Account name')}</div><div className="login-summary-value">{identifier}</div><button type="button" className="login-change" onClick={resetStep}>{zh ? '更改' : 'Change'}</button></div>
-            <label className="login-label" htmlFor="login-password">{zh ? '密码' : 'Password'}</label>
-            <input id="login-password" className="login-input" type="password" autoComplete="current-password" value={password} onChange={(event) => setPassword(event.currentTarget.value)} required autoFocus />
+            <div className="login-identity-summary"><div className="login-summary-label">{mode === 'email' ? (zh ? '电子邮箱' : 'Email address') : (zh ? '账户名' : 'Account name')}</div><div className="login-summary-value">{identifier}</div><Button kind="ghost" size="sm" type="button" onClick={resetStep}>{zh ? '更改' : 'Change'}</Button></div>
+            <PasswordInput
+              id="login-password"
+              labelText={zh ? '密码' : 'Password'}
+              autoComplete="current-password"
+              value={password}
+              onChange={(event) => setPassword(event.currentTarget.value)}
+              required
+              autoFocus
+            />
             {error && <div className="login-error" role="alert">{error}</div>}
-            {pending ? <div className="login-pending">{zh ? '正在登录…' : 'Signing in…'}</div> : <button className="login-submit" type="submit">{zh ? '登录' : 'Sign in'} <span aria-hidden="true">→</span></button>}
+            {pending
+              ? <InlineLoading description={zh ? '正在登录…' : 'Signing in…'} />
+              : <Button kind="primary" type="submit">{zh ? '登录' : 'Sign in'}</Button>}
           </form>}
           <div className="login-contact">{zh ? '没有账户？' : 'No account?'} <a href="mailto:xg.y@outlook.com">{zh ? '联系我们' : 'Contact us'}</a></div>
         </div>
