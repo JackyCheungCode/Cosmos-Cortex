@@ -20,6 +20,7 @@ import type { Session } from '@supabase/supabase-js';
 import { Link, Route, Switch, useLocation, useParams } from 'wouter';
 import { supabase, supabaseConfigured } from './lib/supabase';
 import ContactsWorkspace from './components/contacts/ContactsWorkspace';
+import AccountsWorkspace from './components/accounts/AccountsWorkspace';
 import './index.css';
 
 type Lang = 'zh' | 'en';
@@ -686,6 +687,8 @@ function Router({ lang, setLang, onSignIn, onSignOut }: { lang: Lang; setLang: (
   if (path === '/login') return <LoginPage lang={lang} setLang={setLang} onSignIn={onSignIn} />;
   return <AppShell lang={lang} setLang={setLang} onSignOut={onSignOut}><Switch>
     <Route path="/"><Dashboard lang={lang} /></Route>
+    <Route path="/accounts/:id"><AccountsWorkspace lang={lang} /></Route>
+    <Route path="/accounts"><AccountsWorkspace lang={lang} /></Route>
     <Route path="/contacts/:id"><ContactsWorkspace lang={lang} /></Route>
     <Route path="/contacts"><ContactsWorkspace lang={lang} /></Route>
     {modules.map((mod) => <Route key={`${mod.entity}-detail`} path={`/${mod.entity}/:id`}><ResourcePage entity={mod.entity} lang={lang} /></Route>)}
