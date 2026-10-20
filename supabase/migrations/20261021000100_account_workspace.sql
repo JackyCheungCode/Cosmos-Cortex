@@ -131,12 +131,12 @@ returns trigger
 language plpgsql
 security invoker
 set search_path = public
-as $
+as $account_address_updated_at$
 begin
  new.updated_at := now();
  return new;
 end;
-$;
+$account_address_updated_at$;
 
 drop trigger if exists crm_account_addresses_updated_at on public.crm_account_addresses;
 create trigger crm_account_addresses_updated_at before update on public.crm_account_addresses
