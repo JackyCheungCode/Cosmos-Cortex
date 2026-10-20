@@ -23,6 +23,12 @@ alter table public.crm_accounts
   add column if not exists health_score smallint,
   add column if not exists next_follow_up_at date;
 
+-- Empty account numbers are allowed; only non-empty numbers must be unique per owner.
+alter table public.crm_accounts drop constraint if exists crm_accounts_owner_id_account_number_key;
+create unique index if not exists crm_accounts_owner_number_nonempty_idx
+ on public.crm_accounts(owner_id, account_number)
+ where account_number <> '';
+
 alter table public.crm_accounts drop constraint if exists crm_accounts_type_check;
 alter table public.crm_accounts add constraint crm_accounts_type_check check (type in ('customer','prospect','partner','supplier'));
 alter table public.crm_accounts drop constraint if exists crm_accounts_status_check;
