@@ -1473,3 +1473,12 @@ a.record-link, .content a:not(.nav-link) { color: #0f62fe; }
 .account-form-field .cds--text-input,.account-form-field .cds--text-area{width:100%}
 @media(max-width:768px){.accounts-workspace{padding:16px}.accounts-page-header,.account-detail-top{flex-direction:column}.account-list-tools{grid-template-columns:1fr}.account-kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.account-overview-grid{grid-template-columns:1fr}.account-detail-actions{width:100%}.account-detail-actions button{flex:1}.account-form-grid{grid-template-columns:1fr}.account-list-panel,.account-detail-panel{padding:12px}}
 @media(max-width:390px){.accounts-workspace{padding:10px}.account-kpi-grid>div{padding:12px}.account-kpi-grid strong{font-size:18px}.account-detail-top h1,.accounts-page-header h1{font-size:24px}.account-pagination{align-items:flex-start;flex-direction:column}}
+
+.account-mobile-list{display:none}
+.account-mobile-card{display:block;color:var(--cds-text-primary);text-decoration:none;border:1px solid var(--cds-border-subtle);border-radius:8px;padding:14px;margin-bottom:10px;background:var(--cds-layer)}
+.account-mobile-card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.account-mobile-card-top strong{font-size:15px;overflow-wrap:anywhere}
+.account-mobile-card p{color:var(--cds-text-secondary);margin:8px 0}
+.account-mobile-card>div:not(.account-mobile-card-top){font-size:13px;overflow-wrap:anywhere}
+.account-mobile-card small{display:block;color:var(--cds-text-secondary);margin-top:10px}
+@media(max-width:768px){.account-table-wrap{display:none}.account-mobile-list{display:block}}
