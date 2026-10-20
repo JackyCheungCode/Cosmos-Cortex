@@ -126,9 +126,21 @@ create trigger crm_accounts_log_change
  after insert or update on public.crm_accounts
  for each row execute function public.log_crm_account_change();
 
+create or replace function public.set_crm_account_address_updated_at()
+returns trigger
+language plpgsql
+security invoker
+set search_path = public
+as $
+begin
+ new.updated_at := now();
+ return new;
+end;
+$;
+
 drop trigger if exists crm_account_addresses_updated_at on public.crm_account_addresses;
 create trigger crm_account_addresses_updated_at before update on public.crm_account_addresses
- for each row execute function public.set_crm_owner_and_updated_at();
+ for each row execute function public.set_crm_account_address_updated_at();
 
 drop policy if exists "Account owners insert account change history" on public.crm_account_change_history;
 create policy "Account owners insert account change history" on public.crm_account_change_history
