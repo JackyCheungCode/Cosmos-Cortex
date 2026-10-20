@@ -122,3 +122,8 @@ create trigger crm_accounts_log_change
 drop trigger if exists crm_account_addresses_updated_at on public.crm_account_addresses;
 create trigger crm_account_addresses_updated_at before update on public.crm_account_addresses
  for each row execute function public.set_crm_owner_and_updated_at();
+
+drop policy if exists "Account owners insert account change history" on public.crm_account_change_history;
+create policy "Account owners insert account change history" on public.crm_account_change_history
+ for insert to authenticated
+ with check (exists (select 1 from public.crm_accounts a where a.id = account_id and a.owner_id = (select auth.uid())));
