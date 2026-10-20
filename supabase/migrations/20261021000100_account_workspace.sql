@@ -21,7 +21,8 @@ alter table public.crm_accounts
   add column if not exists description text not null default '',
   add column if not exists lifecycle_stage text not null default 'customer',
   add column if not exists health_score smallint,
-  add column if not exists next_follow_up_at date;
+  add column if not exists next_follow_up_at date,
+  add column if not exists merged_into_account_id uuid references public.crm_accounts(id) on delete set null;
 
 -- Empty account numbers are allowed; only non-empty numbers must be unique per owner.
 alter table public.crm_accounts drop constraint if exists crm_accounts_owner_id_account_number_key;
@@ -133,3 +134,62 @@ drop policy if exists "Account owners insert account change history" on public.c
 create policy "Account owners insert account change history" on public.crm_account_change_history
  for insert to authenticated
  with check (exists (select 1 from public.crm_accounts a where a.id = account_id and a.owner_id = (select auth.uid())));
+
+
+-- Merge records transactionally without deleting the source account or its audit history.
+create or replace function public.merge_crm_accounts(source_account_id uuid, target_account_id uuid)
+returns void
+language plpgsql
+security invoker
+set search_path = public
+as $$
+declare
+ source_owner uuid;
+ target_owner uuid;
+ target_lifecycle text;
+begin
+ if auth.uid() is null then
+  raise exception 'A signed-in CRM owner is required';
+ end if;
+ if source_account_id = target_account_id then
+  raise exception 'Source and target accounts must be different';
+ end if;
+
+ select owner_id into source_owner
+ from public.crm_accounts where id = source_account_id;
+ select owner_id, lifecycle_stage into target_owner, target_lifecycle
+ from public.crm_accounts where id = target_account_id;
+
+ if source_owner is null or target_owner is null then
+  raise exception 'Source or target account was not found';
+ end if;
+ if source_owner <> (select auth.uid()) or target_owner <> (select auth.uid()) then
+  raise exception 'Both accounts must belong to the signed-in owner';
+ end if;
+ if exists (select 1 from public.crm_accounts where id = source_account_id and merged_into_account_id is not null) then
+  raise exception 'Source account has already been merged';
+ end if;
+ if target_lifecycle = 'merged' then
+  raise exception 'Cannot merge into an already merged account';
+ end if;
+
+ update public.crm_contacts set account_id = target_account_id where account_id = source_account_id;
+ update public.crm_opportunities set account_id = target_account_id where account_id = source_account_id;
+ update public.crm_quotes set account_id = target_account_id where account_id = source_account_id;
+ update public.crm_orders set account_id = target_account_id where account_id = source_account_id;
+ update public.crm_account_addresses set account_id = target_account_id where account_id = source_account_id;
+ update public.crm_account_activities set account_id = target_account_id where account_id = source_account_id;
+ update public.crm_accounts set parent_account_id = target_account_id where parent_account_id = source_account_id and id <> source_account_id;
+
+ update public.crm_accounts
+ set status = 'inactive',
+     lifecycle_stage = 'merged',
+     merged_into_account_id = target_account_id,
+     parent_account_id = null,
+     updated_at = now()
+ where id = source_account_id;
+end;
+$$;
+
+revoke all on function public.merge_crm_accounts(uuid, uuid) from public;
+grant execute on function public.merge_crm_accounts(uuid, uuid) to authenticated;
