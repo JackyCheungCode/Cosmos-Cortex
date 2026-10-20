@@ -1,0 +1,46 @@
+name: Account workspace checks
+
+on:
+  push:
+    branches:
+      - feat/account-workspace-v3
+    paths:
+      - 'artifacts/cosmos-cortex-crm/**'
+      - 'lib/**'
+      - 'supabase/migrations/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
+      - '.github/workflows/account-workspace-check.yml'
+  pull_request:
+    paths:
+      - 'artifacts/cosmos-cortex-crm/**'
+      - 'lib/**'
+      - 'supabase/migrations/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
+      - '.github/workflows/account-workspace-check.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  typecheck-and-build:
+    runs-on: ubuntu-latest
+    env:
+      PORT: 4173
+      BASE_PATH: /
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.8.1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Typecheck and build
+        run: pnpm run build
